@@ -1,0 +1,203 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Area {
+  id           String        @id @default(cuid())
+  nome         String        @unique
+  descricao    String?
+  ativo        Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  componentes  Componente[]
+  criterios    Criterio[]
+  solicitacoes Solicitacao[]
+
+  @@map("areas")
+}
+
+model Componente {
+  id                   String                @id @default(cuid())
+  nome                 String
+  descricao            String?
+  areaId               String
+  ativo                Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  area                 Area                  @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  esforcos             Esforco[]
+  solicitacaoCriterios SolicitacaoCriterio[]
+
+  @@unique([areaId, nome])
+  @@map("componentes")
+}
+
+model Criterio {
+  id                   String                @id @default(cuid())
+  areaId               String
+  nome                 String
+  descricao            String?
+  ativo                Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  complexidades        Complexidade[]
+  area                 Area                  @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  esforcos             Esforco[]
+  solicitacaoCriterios SolicitacaoCriterio[]
+
+  @@unique([areaId, nome])
+  @@map("criterios")
+}
+
+model Complexidade {
+  id                   String                @id @default(cuid())
+  criterioId           String
+  nome                 String
+  descricao            String?
+  ordem                Int                   @default(0)
+  ativo                Boolean               @default(true)
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  criterio             Criterio              @relation(fields: [criterioId], references: [id], onDelete: Cascade)
+  esforcos             Esforco[]
+  solicitacaoCriterios SolicitacaoCriterio[]
+
+  @@unique([criterioId, nome])
+  @@map("complexidades")
+}
+
+model Esforco {
+  id             String       @id @default(cuid())
+  criterioId     String
+  complexidadeId String
+  componenteId   String?
+  valorEsforco   Float
+  unidadeEsforco String       @default("horas")
+  observacao     String?
+  ativo          Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  componente     Componente?  @relation(fields: [componenteId], references: [id])
+  complexidade   Complexidade @relation(fields: [complexidadeId], references: [id], onDelete: Cascade)
+  criterio       Criterio     @relation(fields: [criterioId], references: [id], onDelete: Cascade)
+
+  @@unique([criterioId, complexidadeId, componenteId])
+  @@map("esforcos")
+}
+
+model Solicitacao {
+  id              String                @id @default(cuid())
+  titulo          String
+  descricao       String
+  areaId          String
+  contexto        String?
+  urgencia        String?
+  status          String                @default("NOVO")
+  esforcoTotal    Float?
+  esforcoAprovado Boolean               @default(false)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  areaSolicitante String?
+  solicitante     String?
+  backlogItem     BacklogItem?
+  criterios       SolicitacaoCriterio[]
+  area            Area                  @relation(fields: [areaId], references: [id])
+
+  @@map("solicitacoes")
+}
+
+model SolicitacaoCriterio {
+  id             String       @id @default(cuid())
+  solicitacaoId  String
+  criterioId     String
+  complexidadeId String
+  componenteId   String?
+  valorEsforco   Float
+  fonte          String       @default("IA")
+  justificativa  String?
+  confianca      Float?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  componente     Componente?  @relation(fields: [componenteId], references: [id])
+  complexidade   Complexidade @relation(fields: [complexidadeId], references: [id])
+  criterio       Criterio     @relation(fields: [criterioId], references: [id])
+  solicitacao    Solicitacao  @relation(fields: [solicitacaoId], references: [id], onDelete: Cascade)
+
+  @@unique([solicitacaoId, criterioId, componenteId])
+  @@map("solicitacao_criterios")
+}
+
+model BacklogItem {
+  id                String      @id @default(cuid())
+  solicitacaoId     String      @unique
+  tipoGanho         String
+  valorGanho        Float
+  unidadeGanho      String
+  descricaoPremissa String?
+  ganhoNormalizado  Float
+  scorePriorizacao  Float
+  status            String      @default("NAO_INICIADO")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  dataInicio        DateTime?
+  previsaoConclusao DateTime?
+  solicitacao       Solicitacao @relation(fields: [solicitacaoId], references: [id], onDelete: Cascade)
+
+  @@map("backlog_items")
+}
+
+model GainWeightConfig {
+  id        String   @id @default(cuid())
+  tipoGanho String   @unique
+  peso      Float
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("gain_weight_config")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  nome      String
+  senha     String?
+  googleId  String?   @unique
+  role      String    @default("VIEWER")
+  ativo     Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  entidade        String
+  entidadeId      String
+  acao            String
+  dadosAnteriores String?
+  dadosNovos      String?
+  usuario         String?
+  createdAt       DateTime @default(now())
+
+  @@map("audit_logs")
+}
