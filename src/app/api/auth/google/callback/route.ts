@@ -101,10 +101,8 @@ export async function GET(request: NextRequest) {
 
     return response
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error)
     console.error('[GET /api/auth/google/callback]', error)
     loginUrl.searchParams.set('error', 'oauth_internal_error')
-    loginUrl.searchParams.set('debug', msg)
     return NextResponse.redirect(loginUrl)
   }
 }
