@@ -53,7 +53,8 @@ next-env.d.ts
 # local debug/test scripts
 _check_db.ts
 _test_comp.ts
-src/proxy.ts
 
 # claude memory
 .claude/
+
+.vercel

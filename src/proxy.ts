@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 const PUBLIC_PATHS = ['/login', '/api/auth/login', '/api/auth/google']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Allow public paths
@@ -12,12 +12,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Allow static assets and Next.js internals
-  if (
-    pathname.startsWith('/_next') ||
-    pathname.startsWith('/favicon') ||
-    pathname.endsWith('.jpg') ||
-    pathname.endsWith('.png')
-  ) {
+  if (pathname.startsWith('/_next') || pathname.startsWith('/favicon') || pathname.endsWith('.jpg') || pathname.endsWith('.png')) {
     return NextResponse.next()
   }
 
