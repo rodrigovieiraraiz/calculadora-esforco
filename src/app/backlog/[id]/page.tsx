@@ -35,6 +35,7 @@ export default function BacklogDetailPage() {
   const [solicitacao, setSolicitacao] = useState<any>(null)
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [allBacklogCount, setAllBacklogCount] = useState(0)
+  const [posicaoRanking, setPosicaoRanking] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [newStatus, setNewStatus] = useState('')
   const [saving, setSaving] = useState(false)
@@ -60,7 +61,12 @@ export default function BacklogDetailPage() {
       if (auditRes.ok) setAuditLogs(await auditRes.json())
       if (allRes.ok) {
         const all = await allRes.json()
-        setAllBacklogCount(Array.isArray(all) ? all.length : 0)
+        if (Array.isArray(all)) {
+          setAllBacklogCount(all.length)
+          const sorted = [...all].sort((a, b) => b.scorePriorizacao - a.scorePriorizacao)
+          const idx = sorted.findIndex((item) => item.id === id)
+          if (idx !== -1) setPosicaoRanking(idx + 1)
+        }
       }
     } catch (err) {
       console.error(err)
@@ -112,8 +118,7 @@ export default function BacklogDetailPage() {
     return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(n)
   }
 
-  // Find position in ranking
-  const posicao = backlogItem?.posicao ?? '-'
+  const posicao = posicaoRanking ?? '-'
 
   if (loading) {
     return (
