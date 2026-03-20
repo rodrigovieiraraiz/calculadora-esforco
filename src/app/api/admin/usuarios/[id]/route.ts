@@ -19,7 +19,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 })
     }
 
-    if (role && !['ADMIN', 'VIEWER'].includes(role)) {
+    if (role && !['ADMIN', 'OPERATOR', 'VIEWER'].includes(role)) {
       return NextResponse.json({ error: 'Role inválido' }, { status: 400 })
     }
 
