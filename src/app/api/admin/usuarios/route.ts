@@ -33,8 +33,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email, nome e senha são obrigatórios' }, { status: 400 })
     }
 
-    if (role && !['ADMIN', 'VIEWER'].includes(role)) {
-      return NextResponse.json({ error: 'Role inválido. Use ADMIN ou VIEWER' }, { status: 400 })
+    if (role && !['ADMIN', 'OPERATOR', 'VIEWER'].includes(role)) {
+      return NextResponse.json({ error: 'Role inválido. Use ADMIN, OPERATOR ou VIEWER' }, { status: 400 })
     }
 
     const existing = await prisma.user.findUnique({ where: { email } })
