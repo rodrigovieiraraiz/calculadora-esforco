@@ -119,19 +119,26 @@ AuditLog          (histórico de alterações)
 
 ## Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz (já existe após setup):
+Crie um arquivo `.env` na raiz baseado no `.env.example`:
 
 ```env
-DATABASE_URL="file:./dev.db"
+# Supabase — Transaction pooler (porta 6543)
+DATABASE_URL="postgresql://postgres.[ref]:password@aws-0-[region].pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require"
+# Supabase — Direct connection (porta 5432, usado pelo prisma migrate)
+DIRECT_URL="postgresql://postgres.[ref]:password@aws-0-[region].pooler.supabase.com:5432/postgres?sslmode=require"
 
-# Provider de IA: "mock" (padrão), "openai" ou "anthropic"
+# Google OAuth (Google Cloud Console)
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+GOOGLE_ALLOWED_DOMAIN=""  # ex: "suaempresa.com" ou vazio para qualquer conta
+
+# URL pública da aplicação
+NEXT_PUBLIC_BASE_URL="https://seu-projeto.vercel.app"
+
+# Provider de IA: "mock" (padrão, sem custo), "openai" ou "anthropic"
 AI_PROVIDER="mock"
-
-# Se usar OpenAI
-OPENAI_API_KEY="sk-..."
-
-# Se usar Anthropic
-ANTHROPIC_API_KEY="sk-ant-..."
+OPENAI_API_KEY=""
+ANTHROPIC_API_KEY=""
 ```
 
 ## Setup Local
