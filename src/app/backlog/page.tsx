@@ -80,6 +80,7 @@ export default function BacklogPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [showFormula, setShowFormula] = useState(false)
+  const [isViewer, setIsViewer] = useState(false)
 
   const [filterArea, setFilterArea] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
@@ -129,6 +130,13 @@ export default function BacklogPage() {
       } catch { /* not critical */ }
     }
     fetchAreas()
+  }, [])
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => { if (data?.role === 'VIEWER') setIsViewer(true) })
+      .catch(() => {})
   }, [])
 
   useEffect(() => { fetchBacklog() }, [fetchBacklog])
@@ -318,7 +326,7 @@ export default function BacklogPage() {
       </div>
 
       {/* Batch selection toolbar */}
-      {selected.size > 0 && (
+      {selected.size > 0 && !isViewer && (
         <div className="flex items-center gap-3 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg px-4 py-3">
           <span className="text-sm font-medium text-teal-900 dark:text-teal-200">
             {selected.size} {selected.size === 1 ? 'item selecionado' : 'itens selecionados'}
@@ -351,7 +359,7 @@ export default function BacklogPage() {
               <thead className="bg-gray-50 dark:bg-gray-700/50">
                 <tr>
                   <th className="px-3 py-3 w-10">
-                    <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500" aria-label="Selecionar todos" />
+                    <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
                   </th>
                   <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">#</th>
                   <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
@@ -374,7 +382,7 @@ export default function BacklogPage() {
                   return (
                     <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-3 py-3 w-10">
-                        <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
+                        <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" />
                       </td>
                       <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
                         {positionLabel(item.posicao)}
@@ -478,7 +486,8 @@ export default function BacklogPage() {
                           <div className="inline-flex items-center gap-1">
                             <button
                               onClick={(e) => { e.stopPropagation(); startEditing(item) }}
-                              className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                              disabled={isViewer}
+                              className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                               Editar
                             </button>

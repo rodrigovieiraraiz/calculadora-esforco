@@ -39,6 +39,7 @@ export default function BacklogDetailPage() {
   const [newStatus, setNewStatus] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [isViewer, setIsViewer] = useState(false)
 
   const fetchData = async () => {
     setLoading(true)
@@ -69,6 +70,13 @@ export default function BacklogDetailPage() {
   }
 
   useEffect(() => { fetchData() }, [id])
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => { if (data?.role === 'VIEWER') setIsViewer(true) })
+      .catch(() => {})
+  }, [])
 
   const handleStatusUpdate = async () => {
     setSaving(true)
@@ -284,7 +292,8 @@ export default function BacklogDetailPage() {
           <select
             value={newStatus}
             onChange={(e) => setNewStatus(e.target.value)}
-            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            disabled={isViewer}
+            className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {BACKLOG_STATUSES.map(s => (
               <option key={s} value={s}>
@@ -297,8 +306,8 @@ export default function BacklogDetailPage() {
           </select>
           <button
             onClick={handleStatusUpdate}
-            disabled={saving || newStatus === backlogItem.status}
-            className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700 disabled:opacity-50"
+            disabled={isViewer || saving || newStatus === backlogItem.status}
+            className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Salvando...' : 'Salvar'}
           </button>
