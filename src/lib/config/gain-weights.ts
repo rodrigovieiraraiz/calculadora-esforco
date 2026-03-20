@@ -23,3 +23,8 @@ export const GAIN_TYPE_LABELS: Record<GainType, string> = {
   AUMENTO_RECEITA: 'Aumento de Receita',
   REDUCAO_HORAS: 'Redução de Horas',
 }
+
+// Tipos de ganho cujo valorGanho está em horas e precisa ser convertido para R$
+export const HOUR_BASED_GAIN_TYPES: Set<string> = new Set([GAIN_TYPES.REDUCAO_HORAS])
+
+export const DEFAULT_VALOR_HORA = 150.0

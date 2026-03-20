@@ -1,3 +1,5 @@
+import { HOUR_BASED_GAIN_TYPES } from '@/lib/config/gain-weights'
+
 const MAX_PRIORIZADO = 5
 
 export async function rebalancePrioritization(): Promise<number> {
@@ -46,10 +48,14 @@ export interface RankedItem extends BacklogItemForRanking {
 export function normalizeGain(
   tipoGanho: string,
   valorGanho: number,
-  weights: Record<string, number>
+  weights: Record<string, number>,
+  valorHora = 150.0
 ): number {
   const peso = weights[tipoGanho] ?? 1.0
-  return valorGanho * peso
+  const valorFinanceiro = HOUR_BASED_GAIN_TYPES.has(tipoGanho)
+    ? valorGanho * valorHora
+    : valorGanho
+  return valorFinanceiro * peso
 }
 
 export function calculatePrioritizationScore(
@@ -62,10 +68,11 @@ export function calculatePrioritizationScore(
 
 export function rankBacklog(
   items: BacklogItemForRanking[],
-  weights: Record<string, number>
+  weights: Record<string, number>,
+  valorHora = 150.0
 ): RankedItem[] {
   const scored = items.map((item) => {
-    const ganhoNormalizado = normalizeGain(item.tipoGanho, item.valorGanho, weights)
+    const ganhoNormalizado = normalizeGain(item.tipoGanho, item.valorGanho, weights, valorHora)
     const scorePriorizacao = calculatePrioritizationScore(ganhoNormalizado, item.esforcoTotal)
     return { ...item, ganhoNormalizado, scorePriorizacao }
   })

@@ -5,6 +5,8 @@ import { useState, useEffect, useCallback } from 'react'
 interface Area { id: string; nome: string }
 interface Componente { id: string; nome: string; areaId: string }
 
+const DEFAULT_VALOR_HORA = 150.0
+
 interface ParamRow {
   criterioId: string
   criterioNome: string
@@ -56,8 +58,47 @@ export default function ParametrizacaoPage() {
   // Edit mode (filling form with existing row data)
   const [editingRow, setEditingRow] = useState<ParamRow | null>(null)
 
+  // Valor hora config
+  const [valorHora, setValorHora] = useState<number>(DEFAULT_VALOR_HORA)
+  const [valorHoraInput, setValorHoraInput] = useState<string>(String(DEFAULT_VALOR_HORA))
+  const [savingValorHora, setSavingValorHora] = useState(false)
+
   const showSuccess = (msg: string) => { setSuccess(msg); setTimeout(() => setSuccess(''), 3000) }
   const showError = (msg: string) => { setError(msg); setTimeout(() => setError(''), 5000) }
+
+  useEffect(() => {
+    fetch('/api/admin/hourly-rate')
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.valorHora) {
+          setValorHora(json.valorHora)
+          setValorHoraInput(String(json.valorHora))
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  const handleSaveValorHora = async () => {
+    const valor = Number(valorHoraInput)
+    if (!valor || valor <= 0) { showError('Valor hora deve ser maior que zero.'); return }
+    setSavingValorHora(true)
+    try {
+      const res = await fetch('/api/admin/hourly-rate', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ valorHora: valor }),
+      })
+      const json = await res.json()
+      if (!res.ok) { showError(json.error ?? 'Erro ao salvar.'); return }
+      setValorHora(json.valorHora)
+      setValorHoraInput(String(json.valorHora))
+      showSuccess('Valor hora atualizado com sucesso.')
+    } catch {
+      showError('Erro de conexão.')
+    } finally {
+      setSavingValorHora(false)
+    }
+  }
 
   useEffect(() => {
     fetch('/api/areas?ativo=true')
@@ -319,6 +360,47 @@ export default function ParametrizacaoPage() {
       {error && (
         <div className="rounded-md bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 p-3 text-sm text-red-800 dark:text-red-300">{error}</div>
       )}
+
+      {/* Valor hora config */}
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Valor da Hora de Trabalho</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+          Usado para converter ganhos do tipo &ldquo;Redução de Horas&rdquo; para valor financeiro (R$) antes de calcular o score de priorização.
+        </p>
+        <div className="flex items-end gap-3">
+          <div className="w-40">
+            <label htmlFor="valor-hora" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+              Valor hora (R$)
+            </label>
+            <input
+              id="valor-hora"
+              type="number"
+              min="0.01"
+              step="0.01"
+              value={valorHoraInput}
+              onChange={(e) => setValorHoraInput(e.target.value)}
+              className={`${inputClass} w-full`}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={handleSaveValorHora}
+            disabled={savingValorHora || Number(valorHoraInput) === valorHora}
+            className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+          >
+            {savingValorHora ? 'Salvando...' : 'Salvar'}
+          </button>
+          {Number(valorHoraInput) !== valorHora && (
+            <button
+              type="button"
+              onClick={() => setValorHoraInput(String(valorHora))}
+              className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              Cancelar
+            </button>
+          )}
+        </div>
+      </div>
 
       {/* Area selector */}
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">

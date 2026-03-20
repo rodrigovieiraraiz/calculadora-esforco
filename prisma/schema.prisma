@@ -162,6 +162,15 @@ model GainWeightConfig {
   @@map("gain_weight_config")
 }
 
+model HourlyRateConfig {
+  id        String   @id @default(cuid())
+  valorHora Float    @default(150.0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("hourly_rate_config")
+}
+
 model User {
   id        String    @id @default(cuid())
   email     String    @unique

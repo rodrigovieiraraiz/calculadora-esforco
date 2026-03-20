@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/services/audit'
 import { requireAdmin, AuthError } from '@/lib/auth'
 import { backlogItemSchema } from '@/lib/validators/schemas'
-import { DEFAULT_GAIN_WEIGHTS, GAIN_UNITS } from '@/lib/config/gain-weights'
+import { DEFAULT_GAIN_WEIGHTS, DEFAULT_VALOR_HORA, GAIN_UNITS } from '@/lib/config/gain-weights'
 import { normalizeGain, calculatePrioritizationScore, rebalancePrioritization } from '@/lib/services/prioritization'
 
 export async function GET(request: NextRequest) {
@@ -87,8 +87,11 @@ export async function POST(request: NextRequest) {
       gainWeight = DEFAULT_GAIN_WEIGHTS[tipoGanho] ?? 1.0
     }
 
+    const hourlyRateConfig = await prisma.hourlyRateConfig.findFirst()
+    const valorHora = hourlyRateConfig?.valorHora ?? DEFAULT_VALOR_HORA
+
     const weights = { [tipoGanho]: gainWeight }
-    const ganhoNormalizado = normalizeGain(tipoGanho, valorGanho, weights)
+    const ganhoNormalizado = normalizeGain(tipoGanho, valorGanho, weights, valorHora)
     const scorePriorizacao = calculatePrioritizationScore(
       ganhoNormalizado,
       solicitacao.esforcoTotal ?? 0
