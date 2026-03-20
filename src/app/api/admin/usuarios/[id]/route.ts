@@ -62,3 +62,41 @@ export async function PUT(
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await requireAdmin()
+    const { id } = await params
+
+    if (session.userId === id) {
+      return NextResponse.json({ error: 'Não é possível excluir o próprio usuário.' }, { status: 400 })
+    }
+
+    const existing = await prisma.user.findUnique({ where: { id } })
+    if (!existing) {
+      return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 })
+    }
+
+    await prisma.user.delete({ where: { id } })
+
+    await logAudit({
+      entidade: 'User',
+      entidadeId: id,
+      acao: 'DELETE',
+      dadosAnteriores: { email: existing.email, nome: existing.nome, role: existing.role },
+      dadosNovos: null,
+      usuario: session.email,
+    })
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return NextResponse.json({ error: error.message }, { status: error.status })
+    }
+    console.error('[DELETE /api/admin/usuarios/[id]]', error)
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+  }
+}

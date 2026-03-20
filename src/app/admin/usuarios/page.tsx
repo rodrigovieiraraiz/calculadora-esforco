@@ -172,6 +172,30 @@ export default function UsuariosPage() {
     }
   }
 
+  // Delete
+  const [deleteItem, setDeleteItem] = useState<Usuario | null>(null)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    if (!deleteItem) return
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/admin/usuarios/${deleteItem.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const json = await res.json()
+        showErrorMsg(json.error ?? 'Erro ao excluir usuário.')
+        return
+      }
+      setDeleteItem(null)
+      await fetchUsuarios()
+      showSuccessMsg('Usuário excluído com sucesso.')
+    } catch {
+      showErrorMsg('Erro de conexão.')
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   // Toggle ativo
   const handleToggleAtivo = async (u: Usuario) => {
     try {
@@ -305,6 +329,12 @@ export default function UsuariosPage() {
                       >
                         {u.ativo ? 'Desativar' : 'Ativar'}
                       </button>
+                      <button
+                        onClick={() => setDeleteItem(u)}
+                        className="rounded px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        Excluir
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -411,6 +441,44 @@ export default function UsuariosPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-delete-title">
+          <div className="w-full max-w-sm rounded-lg bg-white dark:bg-gray-800 shadow-xl">
+            <div className="px-6 py-5">
+              <h2 id="modal-delete-title" className="text-base font-semibold text-gray-900 dark:text-white">
+                Confirmar exclusão
+              </h2>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Tem certeza que deseja excluir o usuário <span className="font-medium text-gray-700 dark:text-gray-200">{deleteItem.nome}</span>? Esta ação não pode ser desfeita.
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+              <button
+                onClick={() => setDeleteItem(null)}
+                disabled={deleting}
+                className="rounded-md border border-gray-300 dark:border-gray-600 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {deleting && (
+                  <svg className="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                )}
+                Excluir
+              </button>
+            </div>
           </div>
         </div>
       )}
