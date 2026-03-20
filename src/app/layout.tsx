@@ -7,7 +7,7 @@ import { AppShell } from '@/components/AppShell'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Calculadora de Esforço',
+  title: 'Transformação Backlog',
   description: 'Ferramenta para estimativa e gestão de esforço de desenvolvimento',
 }
 

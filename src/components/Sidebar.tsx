@@ -184,7 +184,7 @@ export function Sidebar() {
             <span className="text-orange-400">RAIZ</span>{' '}
             <span className="text-teal-400">educação</span>
           </span>
-          <span className="text-gray-400 text-xs mt-0.5">Calculadora de Esforço</span>
+          <span className="text-gray-400 text-xs mt-0.5">Transformação Backlog</span>
         </div>
       </div>
 

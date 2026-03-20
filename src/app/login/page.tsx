@@ -70,7 +70,7 @@ function LoginForm() {
             <span className="text-orange-500">RAIZ</span>{' '}
             <span className="text-teal-600">educação</span>
           </h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Calculadora de Esforço</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Transformação Backlog</p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6">
