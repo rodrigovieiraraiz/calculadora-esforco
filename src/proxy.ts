@@ -23,7 +23,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Cookie exists - let the route handler validate the session
+  // Cookie exists - let the route handler validate the session.
+  // Role-based access control (ADMIN/OPERATOR/VIEWER) is enforced
+  // in each route handler via requireAdmin() / requireOperator() in src/lib/auth.ts.
   return NextResponse.next()
 }
 

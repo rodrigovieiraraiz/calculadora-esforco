@@ -138,6 +138,7 @@ export function Sidebar() {
   }, [])
 
   const isAdmin = currentUser?.role === 'ADMIN'
+  const isOperator = currentUser?.role === 'OPERATOR'
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/'
@@ -200,7 +201,7 @@ export function Sidebar() {
           </div>
         ))}
 
-        {isAdmin && adminOnlySections.map((section) => (
+        {(isAdmin || isOperator) && adminOnlySections.map((section) => (
           <div key={section.title} className="mb-6">
             <p className="px-3 mb-1 text-xs font-semibold uppercase tracking-wider text-gray-400">
               {section.title}
@@ -233,6 +234,8 @@ export function Sidebar() {
                 <span className={`inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium mt-0.5 ${
                   currentUser.role === 'ADMIN'
                     ? 'bg-teal-900/60 text-teal-300'
+                    : currentUser.role === 'OPERATOR'
+                    ? 'bg-blue-900/60 text-blue-300'
                     : 'bg-gray-700 text-gray-400'
                 }`}>
                   {currentUser.role}

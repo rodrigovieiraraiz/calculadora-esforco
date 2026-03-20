@@ -2,11 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+type Role = 'ADMIN' | 'OPERATOR' | 'VIEWER'
+
 interface Usuario {
   id: string
   email: string
   nome: string
-  role: 'ADMIN' | 'VIEWER'
+  role: Role
   ativo: boolean
   createdAt: string
 }
@@ -15,17 +17,17 @@ interface CreateForm {
   email: string
   nome: string
   senha: string
-  role: 'ADMIN' | 'VIEWER'
+  role: Role
 }
 
 interface EditForm {
   nome: string
-  role: 'ADMIN' | 'VIEWER'
+  role: Role
   ativo: boolean
   senha: string
 }
 
-const emptyCreateForm: CreateForm = { email: '', nome: '', senha: '', role: 'VIEWER' }
+const emptyCreateForm: CreateForm = { email: '', nome: '', senha: '', role: 'OPERATOR' }
 
 function formatDate(iso: string): string {
   const d = new Date(iso)
@@ -47,7 +49,7 @@ export default function UsuariosPage() {
 
   // Edit modal
   const [editItem, setEditItem] = useState<Usuario | null>(null)
-  const [editForm, setEditForm] = useState<EditForm>({ nome: '', role: 'VIEWER', ativo: true, senha: '' })
+  const [editForm, setEditForm] = useState<EditForm>({ nome: '', role: 'OPERATOR', ativo: true, senha: '' })
   const [editError, setEditError] = useState('')
   const [editing, setEditing] = useState(false)
 
@@ -135,7 +137,7 @@ export default function UsuariosPage() {
 
   const closeEdit = () => {
     setEditItem(null)
-    setEditForm({ nome: '', role: 'VIEWER', ativo: true, senha: '' })
+    setEditForm({ nome: '', role: 'OPERATOR', ativo: true, senha: '' })
     setEditError('')
   }
 
@@ -273,6 +275,10 @@ export default function UsuariosPage() {
                       <span className="inline-flex items-center rounded-full bg-teal-100 dark:bg-teal-900/40 px-2 py-0.5 text-xs font-medium text-teal-800 dark:text-teal-300">
                         ADMIN
                       </span>
+                    ) : u.role === 'OPERATOR' ? (
+                      <span className="inline-flex items-center rounded-full bg-blue-100 dark:bg-blue-900/40 px-2 py-0.5 text-xs font-medium text-blue-800 dark:text-blue-300">
+                        OPERATOR
+                      </span>
                     ) : (
                       <span className="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-700 px-2 py-0.5 text-xs font-medium text-gray-600 dark:text-gray-400">
                         VIEWER
@@ -373,11 +379,12 @@ export default function UsuariosPage() {
                   <select
                     id="c-role"
                     value={createForm.role}
-                    onChange={(e) => setCreateForm((f) => ({ ...f, role: e.target.value as 'ADMIN' | 'VIEWER' }))}
+                    onChange={(e) => setCreateForm((f) => ({ ...f, role: e.target.value as Role }))}
                     className={selectClass}
                   >
-                    <option value="VIEWER">VIEWER</option>
-                    <option value="ADMIN">ADMIN</option>
+                    <option value="VIEWER">VIEWER — somente leitura</option>
+                    <option value="OPERATOR">OPERATOR — acesso geral (exceto admin)</option>
+                    <option value="ADMIN">ADMIN — acesso total</option>
                   </select>
                 </div>
               </div>
@@ -446,11 +453,12 @@ export default function UsuariosPage() {
                   <select
                     id="e-role"
                     value={editForm.role}
-                    onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value as 'ADMIN' | 'VIEWER' }))}
+                    onChange={(e) => setEditForm((f) => ({ ...f, role: e.target.value as Role }))}
                     className={selectClass}
                   >
-                    <option value="VIEWER">VIEWER</option>
-                    <option value="ADMIN">ADMIN</option>
+                    <option value="VIEWER">VIEWER — somente leitura</option>
+                    <option value="OPERATOR">OPERATOR — acesso geral (exceto admin)</option>
+                    <option value="ADMIN">ADMIN — acesso total</option>
                   </select>
                 </div>
                 <div className="flex items-center gap-3">

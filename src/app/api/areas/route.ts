@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { areaSchema } from '@/lib/validators/schemas'
 import { logAudit } from '@/lib/services/audit'
-import { requireAdmin, AuthError } from '@/lib/auth'
+import { requireOperator, AuthError } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireOperator()
     const body = await request.json()
     const { ids } = body
 

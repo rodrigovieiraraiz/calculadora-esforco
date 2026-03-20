@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { logAudit } from '@/lib/services/audit'
-import { requireAdmin, AuthError } from '@/lib/auth'
+import { requireOperator, AuthError } from '@/lib/auth'
 import { backlogItemSchema } from '@/lib/validators/schemas'
 import { DEFAULT_GAIN_WEIGHTS, DEFAULT_VALOR_HORA, GAIN_UNITS } from '@/lib/config/gain-weights'
 import { normalizeGain, calculatePrioritizationScore, rebalancePrioritization } from '@/lib/services/prioritization'
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireOperator()
     const body = await request.json()
     const { ids } = body
 

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { requireAdmin, AuthError } from '@/lib/auth'
+import { requireOperator, AuthError } from '@/lib/auth'
 import { logAudit } from '@/lib/services/audit'
 
 // GET: returns all criteria+complexidades+esforcos for an area, flattened
 export async function GET(request: NextRequest) {
   try {
-    await requireAdmin()
+    await requireOperator()
     const { searchParams } = new URL(request.url)
     const areaId = searchParams.get('areaId')
     if (!areaId) {
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 // POST: create or update criterio + complexidade + esforco in one shot
 export async function POST(request: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireOperator()
     const body = await request.json()
     const { areaId, criterioNome, complexidadeNome, valorEsforco, complexidadeOrdem, componenteId } = body
 
@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
 // Accepts { items: [{ criterioId, complexidadeId }, ...] } for batch delete
 export async function DELETE(request: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireOperator()
     const body = await request.json()
 
     // Support single item or batch
@@ -223,7 +223,7 @@ export async function DELETE(request: NextRequest) {
 // PUT: rename a criterio
 export async function PUT(request: NextRequest) {
   try {
-    const session = await requireAdmin()
+    const session = await requireOperator()
     const body = await request.json()
     const { criterioId, nome } = body
 
