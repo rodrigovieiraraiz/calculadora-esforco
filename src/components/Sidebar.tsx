@@ -178,8 +178,9 @@ export function Sidebar() {
 
   const navContent = (
     <>
-      <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-700">
-        <Image src="/logo.jpg" alt="Raiz Educação" width={40} height={40} className="rounded-lg shrink-0" />
+      <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-700 min-h-[64px]">
+        <div className="w-10 shrink-0 lg:hidden" aria-hidden="true" />
+        <Image src="/logo.jpg" alt="Raiz Educação" width={40} height={40} className="rounded-lg shrink-0 hidden lg:block" />
         <div className="flex flex-col">
           <span className="font-bold text-sm leading-tight">
             <span className="text-orange-400">RAIZ</span>{' '}

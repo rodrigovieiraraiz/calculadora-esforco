@@ -135,54 +135,58 @@ export default function AuditoriaPage() {
       )}
 
       {/* Filters */}
-      <div className="flex flex-wrap items-end gap-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 shadow-sm">
-        <div>
-          <label htmlFor="f-entidade" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Entidade
-          </label>
-          <select
-            id="f-entidade"
-            value={filterEntidade}
-            onChange={(e) => setFilterEntidade(e.target.value)}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-          >
-            <option value="">Todas</option>
-            {ENTIDADES.map((e) => (
-              <option key={e} value={e}>{e}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label htmlFor="f-de" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            De
-          </label>
-          <input
-            id="f-de"
-            type="date"
-            value={filterDe}
-            onChange={(e) => setFilterDe(e.target.value)}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-          />
-        </div>
-        <div>
-          <label htmlFor="f-ate" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-            Até
-          </label>
-          <input
-            id="f-ate"
-            type="date"
-            value={filterAte}
-            onChange={(e) => setFilterAte(e.target.value)}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-          />
+      <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label htmlFor="f-entidade" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              Entidade
+            </label>
+            <select
+              id="f-entidade"
+              value={filterEntidade}
+              onChange={(e) => setFilterEntidade(e.target.value)}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            >
+              <option value="">Todas</option>
+              {ENTIDADES.map((e) => (
+                <option key={e} value={e}>{e}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="f-de" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              De
+            </label>
+            <input
+              id="f-de"
+              type="date"
+              value={filterDe}
+              onChange={(e) => setFilterDe(e.target.value)}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label htmlFor="f-ate" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              Até
+            </label>
+            <input
+              id="f-ate"
+              type="date"
+              value={filterAte}
+              onChange={(e) => setFilterAte(e.target.value)}
+              className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            />
+          </div>
         </div>
         {hasFilters && (
-          <button
-            onClick={clearFilters}
-            className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline self-end pb-1.5"
-          >
-            Limpar filtros
-          </button>
+          <div className="mt-2">
+            <button
+              onClick={clearFilters}
+              className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
+            >
+              Limpar filtros
+            </button>
+          </div>
         )}
       </div>
 
@@ -204,71 +208,100 @@ export default function AuditoriaPage() {
             <p className="text-sm">Nenhum registro encontrado.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Data/Hora</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Usuário</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Entidade</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ação</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Detalhes</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                {filteredLogs.map((log) => (
-                  <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 align-top">
-                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                      {formatDateTime(log.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">
-                      {log.usuario ?? '—'}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
-                      <span className="font-medium">{log.entidade}</span>
-                      {log.entidadeId && (
-                        <span className="ml-1 text-xs text-gray-400 dark:text-gray-500 font-mono">
-                          #{log.entidadeId.slice(0, 8)}
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      {acaoBadge(log.acao)}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      {(log.dadosAnteriores || log.dadosNovos) ? (
-                        <details className="group">
-                          <summary className="cursor-pointer text-xs text-teal-600 dark:text-teal-400 hover:underline select-none list-none">
-                            Ver detalhes
-                          </summary>
-                          <div className="mt-2 space-y-2">
-                            {log.dadosAnteriores && (
-                              <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Antes:</p>
-                                <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all max-w-xs">
-                                  {JSON.stringify(log.dadosAnteriores, null, 2)}
-                                </pre>
-                              </div>
-                            )}
-                            {log.dadosNovos && (
-                              <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Depois:</p>
-                                <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all max-w-xs">
-                                  {JSON.stringify(log.dadosNovos, null, 2)}
-                                </pre>
-                              </div>
-                            )}
+          <>
+            {/* Mobile card list */}
+            <ul className="divide-y divide-gray-100 dark:divide-gray-700 sm:hidden">
+              {filteredLogs.map((log) => (
+                <li key={log.id} className="p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{formatDateTime(log.createdAt)}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">
+                        {log.entidade}
+                        {log.entidadeId && (
+                          <span className="ml-1 text-xs text-gray-400 dark:text-gray-500 font-mono">#{log.entidadeId.slice(0, 8)}</span>
+                        )}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{log.usuario ?? '—'}</p>
+                    </div>
+                    {acaoBadge(log.acao)}
+                  </div>
+                  {(log.dadosAnteriores || log.dadosNovos) && (
+                    <details>
+                      <summary className="cursor-pointer text-xs text-teal-600 dark:text-teal-400 hover:underline select-none list-none">Ver detalhes</summary>
+                      <div className="mt-2 space-y-2">
+                        {log.dadosAnteriores && (
+                          <div>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Antes:</p>
+                            <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all">{JSON.stringify(log.dadosAnteriores, null, 2)}</pre>
                           </div>
-                        </details>
-                      ) : (
-                        <span className="text-gray-400 dark:text-gray-600 text-xs">—</span>
-                      )}
-                    </td>
+                        )}
+                        {log.dadosNovos && (
+                          <div>
+                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Depois:</p>
+                            <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all">{JSON.stringify(log.dadosNovos, null, 2)}</pre>
+                          </div>
+                        )}
+                      </div>
+                    </details>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            {/* Desktop table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700/50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Data/Hora</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Usuário</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Entidade</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ação</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Detalhes</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                  {filteredLogs.map((log) => (
+                    <tr key={log.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 align-top">
+                      <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDateTime(log.createdAt)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">{log.usuario ?? '—'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="font-medium">{log.entidade}</span>
+                        {log.entidadeId && (
+                          <span className="ml-1 text-xs text-gray-400 dark:text-gray-500 font-mono">#{log.entidadeId.slice(0, 8)}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">{acaoBadge(log.acao)}</td>
+                      <td className="px-4 py-3 text-sm">
+                        {(log.dadosAnteriores || log.dadosNovos) ? (
+                          <details className="group">
+                            <summary className="cursor-pointer text-xs text-teal-600 dark:text-teal-400 hover:underline select-none list-none">Ver detalhes</summary>
+                            <div className="mt-2 space-y-2">
+                              {log.dadosAnteriores && (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Antes:</p>
+                                  <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all max-w-xs">{JSON.stringify(log.dadosAnteriores, null, 2)}</pre>
+                                </div>
+                              )}
+                              {log.dadosNovos && (
+                                <div>
+                                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Depois:</p>
+                                  <pre className="text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded p-2 overflow-x-auto text-gray-700 dark:text-gray-300 whitespace-pre-wrap break-all max-w-xs">{JSON.stringify(log.dadosNovos, null, 2)}</pre>
+                                </div>
+                              )}
+                            </div>
+                          </details>
+                        ) : (
+                          <span className="text-gray-400 dark:text-gray-600 text-xs">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

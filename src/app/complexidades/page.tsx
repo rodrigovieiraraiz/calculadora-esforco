@@ -239,14 +239,14 @@ export default function ComplexidadesPage() {
       )}
 
       {/* Filters - Cascading */}
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2">
-          <label htmlFor="filter-area" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Área:</label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="filter-area" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Área</label>
           <select
             id="filter-area"
             value={filterAreaId}
             onChange={(e) => { setFilterAreaId(e.target.value); setFilterCriterioId('') }}
-            className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           >
             <option value="">Todas</option>
             {areas.map((a) => (
@@ -254,14 +254,14 @@ export default function ComplexidadesPage() {
             ))}
           </select>
         </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="filter-criterio" className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">Critério:</label>
+        <div>
+          <label htmlFor="filter-criterio" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Critério</label>
           <select
             id="filter-criterio"
             value={filterCriterioId}
             onChange={(e) => setFilterCriterioId(e.target.value)}
             disabled={!filterAreaId}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500"
+            className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-1.5 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             <option value="">Todos</option>
             {criterios.map((c) => (
@@ -270,12 +270,14 @@ export default function ComplexidadesPage() {
           </select>
         </div>
         {(filterAreaId || filterCriterioId) && (
-          <button
-            onClick={() => { setFilterAreaId(''); setFilterCriterioId('') }}
-            className="text-xs text-gray-500 hover:text-gray-700 underline"
-          >
-            Limpar filtros
-          </button>
+          <div className="sm:col-span-2">
+            <button
+              onClick={() => { setFilterAreaId(''); setFilterCriterioId('') }}
+              className="text-xs text-gray-500 hover:text-gray-700 underline"
+            >
+              Limpar filtros
+            </button>
+          </div>
         )}
       </div>
 
@@ -300,49 +302,66 @@ export default function ComplexidadesPage() {
             </button>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700/50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nome</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Descrição</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Critério</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ordem</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+          <>
+            {/* Mobile card list */}
+            <ul className="divide-y divide-gray-100 dark:divide-gray-700 sm:hidden">
               {complexidades.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{item.nome}</td>
-                  <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">{item.descricao ?? '—'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.criterio.nome}</td>
-                  <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.ordem}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${item.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
+                <li key={item.id} className="p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{item.nome}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{item.criterio.nome} · Ordem: {item.ordem}</p>
+                      {item.descricao && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{item.descricao}</p>}
+                    </div>
+                    <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${item.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                       {item.ativo ? 'Ativo' : 'Inativo'}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="inline-flex items-center gap-2">
-                      <button onClick={() => openEdit(item)} className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30">
-                        Editar
-                      </button>
-                      <button
-                        onClick={() => handleToggleAtivo(item)}
-                        className={`rounded px-2 py-1 text-xs font-medium ${item.ativo ? 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30' : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30'}`}
-                      >
-                        {item.ativo ? 'Desativar' : 'Ativar'}
-                      </button>
-                      <button onClick={() => setDeleteConfirm(item.id)} className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30">
-                        Excluir
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => openEdit(item)} className="flex-1 rounded py-1.5 text-sm font-medium text-blue-600 border border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30">Editar</button>
+                    <button onClick={() => handleToggleAtivo(item)} className={`flex-1 rounded py-1.5 text-sm font-medium border ${item.ativo ? 'text-yellow-600 border-yellow-200 dark:border-yellow-800 hover:bg-yellow-50 dark:hover:bg-yellow-900/30' : 'text-green-600 border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/30'}`}>{item.ativo ? 'Desativar' : 'Ativar'}</button>
+                    <button onClick={() => setDeleteConfirm(item.id)} className="flex-1 rounded py-1.5 text-sm font-medium text-red-600 border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/30">Excluir</button>
+                  </div>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+
+            {/* Desktop table */}
+            <table className="hidden sm:table min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700/50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nome</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Descrição</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Critério</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ordem</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                {complexidades.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{item.nome}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate">{item.descricao ?? '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.criterio.nome}</td>
+                    <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.ordem}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${item.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
+                        {item.ativo ? 'Ativo' : 'Inativo'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <button onClick={() => openEdit(item)} className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30">Editar</button>
+                        <button onClick={() => handleToggleAtivo(item)} className={`rounded px-2 py-1 text-xs font-medium ${item.ativo ? 'text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30' : 'text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30'}`}>{item.ativo ? 'Desativar' : 'Ativar'}</button>
+                        <button onClick={() => setDeleteConfirm(item.id)} className="rounded px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30">Excluir</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
 

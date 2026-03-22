@@ -358,158 +358,221 @@ export default function BacklogPage() {
             )}
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700/50">
-                <tr>
-                  <th className="px-3 py-3 w-10">
-                    <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
-                  </th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">#</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Solicitante</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Solicitante</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Técnica</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Esforço</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tipo Ganho</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Valor Ganho</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Score</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Início</th>
-                  <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Previsão</th>
-                  <th className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                {items.map((item) => {
-                  const isEditing = editingId === item.id
-                  return (
-                    <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-3 py-3 w-10">
-                        <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" />
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {positionLabel(item.posicao)}
-                      </td>
-                      <td
-                        className="px-3 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
-                        onClick={() => router.push(`/backlog/${item.id}`)}
-                        title={item.solicitacao?.titulo}
-                      >
-                        {item.solicitacao?.titulo ?? '—'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {item.solicitacao?.solicitante ?? '—'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {item.solicitacao?.areaSolicitante ?? '—'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-600 dark:text-gray-400">
-                        {item.solicitacao?.area?.nome ?? '—'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {item.solicitacao?.esforcoTotal != null ? `${item.solicitacao.esforcoTotal}h` : '—'}
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        <div>
-                          <span>{GAIN_TYPE_LABELS[item.tipoGanho] ?? item.tipoGanho}</span>
-                          <span className="block text-xs text-gray-400 dark:text-gray-500">{GAIN_WEIGHT_LABELS[item.tipoGanho] ?? ''}</span>
+          <>
+            {/* Mobile card list */}
+            <ul className="divide-y divide-gray-100 dark:divide-gray-700 md:hidden">
+              {items.map((item) => {
+                const isEditing = editingId === item.id
+                return (
+                  <li key={item.id} className="p-4 space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {!isViewer && (
+                          <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 shrink-0" />
+                        )}
+                        <span className="text-base shrink-0">{positionLabel(item.posicao)}</span>
+                        <button
+                          onClick={() => router.push(`/backlog/${item.id}`)}
+                          className="text-sm font-semibold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 text-left truncate"
+                        >
+                          {item.solicitacao?.titulo ?? '—'}
+                        </button>
+                      </div>
+                      <StatusBadge status={item.status as Parameters<typeof StatusBadge>[0]['status']} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Solicitante:</span> {item.solicitacao?.solicitante ?? '—'}</div>
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Área:</span> {item.solicitacao?.area?.nome ?? '—'}</div>
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Esforço:</span> {item.solicitacao?.esforcoTotal != null ? `${item.solicitacao.esforcoTotal}h` : '—'}</div>
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Score:</span> <strong className="text-gray-900 dark:text-white">{item.scorePriorizacao?.toFixed(2) ?? '—'}</strong></div>
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Ganho:</span> {GAIN_TYPE_LABELS[item.tipoGanho] ?? item.tipoGanho}</div>
+                      <div><span className="font-medium text-gray-500 dark:text-gray-500">Valor:</span> {item.valorGanho != null ? item.valorGanho.toLocaleString('pt-BR') : '—'}</div>
+                    </div>
+                    {isEditing ? (
+                      <div className="space-y-2">
+                        <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1.5 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                          {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                        </select>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Início</label>
+                            <input type="date" value={editDataInicio} onChange={(e) => setEditDataInicio(e.target.value)} className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                          </div>
+                          <div>
+                            <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">Previsão</label>
+                            <input type="date" value={editPrevisao} onChange={(e) => setEditPrevisao(e.target.value)} className="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                          </div>
                         </div>
-                      </td>
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {item.valorGanho != null ? item.valorGanho.toLocaleString('pt-BR') : '—'}
-                      </td>
-                      <td className="px-3 py-3">
-                        <span className="text-base font-bold text-gray-900 dark:text-white" title={`Ganho Norm.: ${item.ganhoNormalizado?.toFixed(2) ?? '—'} / Esforço: ${item.solicitacao?.esforcoTotal ?? '—'}h`}>
-                          {item.scorePriorizacao?.toFixed(2) ?? '—'}
-                        </span>
-                      </td>
+                        <div className="flex gap-2">
+                          <button onClick={() => saveEditing(item.id)} disabled={saving} className="flex-1 rounded py-1.5 text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50">{saving ? '...' : 'Salvar'}</button>
+                          <button onClick={cancelEditing} className="flex-1 rounded py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700">Cancelar</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex gap-2">
+                        <button onClick={(e) => { e.stopPropagation(); startEditing(item) }} disabled={isViewer} className="flex-1 rounded py-1.5 text-sm font-medium text-blue-600 border border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 disabled:opacity-50 disabled:cursor-not-allowed">Editar</button>
+                        <button onClick={() => router.push(`/backlog/${item.id}`)} className="flex-1 rounded py-1.5 text-sm font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">Detalhes</button>
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
 
-                      {/* Status */}
-                      <td className="px-3 py-3">
-                        {isEditing ? (
-                          <select
-                            value={editStatus}
-                            onChange={(e) => setEditStatus(e.target.value)}
-                            className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          >
-                            {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-                          </select>
-                        ) : (
-                          <StatusBadge status={item.status as Parameters<typeof StatusBadge>[0]['status']} />
-                        )}
-                      </td>
-
-                      {/* Data Início */}
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {isEditing ? (
-                          <input
-                            type="date"
-                            value={editDataInicio}
-                            onChange={(e) => setEditDataInicio(e.target.value)}
-                            className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        ) : (
-                          formatDateBR(item.dataInicio)
-                        )}
-                      </td>
-
-                      {/* Previsão Conclusão */}
-                      <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                        {isEditing ? (
-                          <input
-                            type="date"
-                            value={editPrevisao}
-                            onChange={(e) => setEditPrevisao(e.target.value)}
-                            className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        ) : (
-                          formatDateBR(item.previsaoConclusao)
-                        )}
-                      </td>
-
-                      {/* Actions */}
-                      <td className="px-3 py-3 text-right">
-                        {isEditing ? (
-                          <div className="inline-flex items-center gap-1">
-                            <button
-                              onClick={() => saveEditing(item.id)}
-                              disabled={saving}
-                              className="rounded px-2 py-1 text-xs font-medium text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 disabled:opacity-50"
-                            >
-                              {saving ? '...' : 'Salvar'}
-                            </button>
-                            <button
-                              onClick={cancelEditing}
-                              className="rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                              Cancelar
-                            </button>
+            {/* Desktop table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700/50">
+                  <tr>
+                    <th className="px-3 py-3 w-10">
+                      <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
+                    </th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">#</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Solicitante</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Solicitante</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Técnica</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Esforço</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tipo Ganho</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Valor Ganho</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Score</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Início</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Previsão</th>
+                    <th className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                  {items.map((item) => {
+                    const isEditing = editingId === item.id
+                    return (
+                      <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <td className="px-3 py-3 w-10">
+                          <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" />
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {positionLabel(item.posicao)}
+                        </td>
+                        <td
+                          className="px-3 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+                          onClick={() => router.push(`/backlog/${item.id}`)}
+                          title={item.solicitacao?.titulo}
+                        >
+                          {item.solicitacao?.titulo ?? '—'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {item.solicitacao?.solicitante ?? '—'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {item.solicitacao?.areaSolicitante ?? '—'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-600 dark:text-gray-400">
+                          {item.solicitacao?.area?.nome ?? '—'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {item.solicitacao?.esforcoTotal != null ? `${item.solicitacao.esforcoTotal}h` : '—'}
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          <div>
+                            <span>{GAIN_TYPE_LABELS[item.tipoGanho] ?? item.tipoGanho}</span>
+                            <span className="block text-xs text-gray-400 dark:text-gray-500">{GAIN_WEIGHT_LABELS[item.tipoGanho] ?? ''}</span>
                           </div>
-                        ) : (
-                          <div className="inline-flex items-center gap-1">
-                            <button
-                              onClick={(e) => { e.stopPropagation(); startEditing(item) }}
-                              disabled={isViewer}
-                              className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {item.valorGanho != null ? item.valorGanho.toLocaleString('pt-BR') : '—'}
+                        </td>
+                        <td className="px-3 py-3">
+                          <span className="text-base font-bold text-gray-900 dark:text-white" title={`Ganho Norm.: ${item.ganhoNormalizado?.toFixed(2) ?? '—'} / Esforço: ${item.solicitacao?.esforcoTotal ?? '—'}h`}>
+                            {item.scorePriorizacao?.toFixed(2) ?? '—'}
+                          </span>
+                        </td>
+
+                        {/* Status */}
+                        <td className="px-3 py-3">
+                          {isEditing ? (
+                            <select
+                              value={editStatus}
+                              onChange={(e) => setEditStatus(e.target.value)}
+                              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
                             >
-                              Editar
-                            </button>
-                            <button
-                              onClick={() => router.push(`/backlog/${item.id}`)}
-                              className="rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                              Detalhes
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                              {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                            </select>
+                          ) : (
+                            <StatusBadge status={item.status as Parameters<typeof StatusBadge>[0]['status']} />
+                          )}
+                        </td>
+
+                        {/* Data Início */}
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {isEditing ? (
+                            <input
+                              type="date"
+                              value={editDataInicio}
+                              onChange={(e) => setEditDataInicio(e.target.value)}
+                              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                          ) : (
+                            formatDateBR(item.dataInicio)
+                          )}
+                        </td>
+
+                        {/* Previsão Conclusão */}
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {isEditing ? (
+                            <input
+                              type="date"
+                              value={editPrevisao}
+                              onChange={(e) => setEditPrevisao(e.target.value)}
+                              className="rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-2 py-1 text-xs text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            />
+                          ) : (
+                            formatDateBR(item.previsaoConclusao)
+                          )}
+                        </td>
+
+                        {/* Actions */}
+                        <td className="px-3 py-3 text-right">
+                          {isEditing ? (
+                            <div className="inline-flex items-center gap-1">
+                              <button
+                                onClick={() => saveEditing(item.id)}
+                                disabled={saving}
+                                className="rounded px-2 py-1 text-xs font-medium text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 disabled:opacity-50"
+                              >
+                                {saving ? '...' : 'Salvar'}
+                              </button>
+                              <button
+                                onClick={cancelEditing}
+                                className="rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center gap-1">
+                              <button
+                                onClick={(e) => { e.stopPropagation(); startEditing(item) }}
+                                disabled={isViewer}
+                                className="rounded px-2 py-1 text-xs font-medium text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                Editar
+                              </button>
+                              <button
+                                onClick={() => router.push(`/backlog/${item.id}`)}
+                                className="rounded px-2 py-1 text-xs font-medium text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                              >
+                                Detalhes
+                              </button>
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 

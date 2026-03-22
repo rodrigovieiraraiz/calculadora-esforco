@@ -367,7 +367,7 @@ export default function ParametrizacaoPage() {
         <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
           Usado para converter ganhos do tipo &ldquo;Redução de Horas&rdquo; para valor financeiro (R$) antes de calcular o score de priorização.
         </p>
-        <div className="flex items-end gap-3">
+        <div className="flex flex-wrap items-end gap-3">
           <div className="w-40">
             <label htmlFor="valor-hora" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
               Valor hora (R$)
@@ -436,8 +436,8 @@ export default function ParametrizacaoPage() {
                 </button>
               )}
             </div>
-            <form onSubmit={handleAddEntry} className="flex flex-wrap items-end gap-3">
-              <div className="min-w-[180px]">
+            <form onSubmit={handleAddEntry} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div>
                 <label htmlFor="f-componente" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Componente</label>
                 <select
                   id="f-componente"
@@ -449,7 +449,7 @@ export default function ParametrizacaoPage() {
                   {componentes.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
                 </select>
               </div>
-              <div className="flex-1 min-w-[180px]">
+              <div className="sm:col-span-1">
                 <label htmlFor="f-criterio" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Critério</label>
                 <input
                   id="f-criterio"
@@ -465,20 +465,22 @@ export default function ParametrizacaoPage() {
                   {existingCriterios.map((nome) => <option key={nome} value={nome} />)}
                 </datalist>
               </div>
-              <div className="min-w-[160px]">
+              <div>
                 <label htmlFor="f-complexidade" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Complexidade</label>
                 <select id="f-complexidade" value={complexidadeNome} onChange={(e) => setComplexidadeNome(e.target.value)} className={`${inputClass} w-full`}>
                   <option value="">Selecione</option>
                   {COMPLEXIDADE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
                 </select>
               </div>
-              <div className="w-28">
+              <div>
                 <label htmlFor="f-esforco" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Esforço (h)</label>
                 <input id="f-esforco" type="number" min="0.5" step="0.5" value={valorEsforco} onChange={(e) => setValorEsforco(e.target.value)} placeholder="0" className={`${inputClass} w-full`} />
               </div>
-              <button type="submit" disabled={submitting} className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50">
-                {submitting ? 'Salvando...' : editingRow ? 'Atualizar' : '+ Adicionar'}
-              </button>
+              <div className="sm:col-span-2 lg:col-span-4 flex">
+                <button type="submit" disabled={submitting} className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50">
+                  {submitting ? 'Salvando...' : editingRow ? 'Atualizar' : '+ Adicionar'}
+                </button>
+              </div>
             </form>
           </div>
 

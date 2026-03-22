@@ -959,8 +959,8 @@ export default function NovaSolicitacaoPage() {
         {/* Add Manual Criterio */}
         <div className="border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-5 py-4">
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">Adicionar Critério Manual</p>
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="flex-1 min-w-40">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
               <label htmlFor="manual-componente" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Componente</label>
               <select
                 id="manual-componente"
@@ -974,7 +974,7 @@ export default function NovaSolicitacaoPage() {
                 ))}
               </select>
             </div>
-            <div className="flex-1 min-w-40">
+            <div>
               <label htmlFor="manual-criterio" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Critério</label>
               <select
                 id="manual-criterio"
@@ -988,7 +988,7 @@ export default function NovaSolicitacaoPage() {
                 ))}
               </select>
             </div>
-            <div className="flex-1 min-w-40">
+            <div>
               <label htmlFor="manual-complexidade" className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Complexidade</label>
               <select
                 id="manual-complexidade"
@@ -1009,24 +1009,26 @@ export default function NovaSolicitacaoPage() {
                 ))}
               </select>
             </div>
-            <button
-              type="button"
-              onClick={handleAddManualCriterio}
-              disabled={!manualCriterioId || !manualComplexidadeId || loadingAction === 'add-manual'}
-              className="inline-flex items-center gap-1.5 rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 px-3.5 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {loadingAction === 'add-manual' ? (
-                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                </svg>
-              ) : (
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
-              )}
-              Adicionar Critério
-            </button>
+            <div className="sm:col-span-3">
+              <button
+                type="button"
+                onClick={handleAddManualCriterio}
+                disabled={!manualCriterioId || !manualComplexidadeId || loadingAction === 'add-manual'}
+                className="inline-flex items-center gap-1.5 rounded-md bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 px-3.5 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {loadingAction === 'add-manual' ? (
+                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                ) : (
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                )}
+                Adicionar Critério
+              </button>
+            </div>
           </div>
         </div>
       </div>
