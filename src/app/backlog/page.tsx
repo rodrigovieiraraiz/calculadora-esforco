@@ -291,36 +291,40 @@ export default function BacklogPage() {
 
       {/* Filters */}
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1 min-w-[160px]">
-            <label htmlFor="filter-area" className="text-xs font-medium text-gray-600 dark:text-gray-400">Área</label>
-            <select id="filter-area" value={filterArea} onChange={(e) => setFilterArea(e.target.value)}
-              className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="">Todas as áreas</option>
-              {areas.map((a) => <option key={a.id} value={a.id}>{a.nome}</option>)}
-            </select>
-          </div>
-          <div className="flex flex-col gap-1 min-w-[160px]">
-            <label htmlFor="filter-status" className="text-xs font-medium text-gray-600 dark:text-gray-400">Status</label>
-            <select id="filter-status" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
-              className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="">Todos os status</option>
-              {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </div>
-          <div className="flex flex-col gap-1 min-w-[180px]">
-            <label htmlFor="filter-tipo-ganho" className="text-xs font-medium text-gray-600 dark:text-gray-400">Tipo de Ganho</label>
-            <select id="filter-tipo-ganho" value={filterTipoGanho} onChange={(e) => setFilterTipoGanho(e.target.value)}
-              className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="">Todos os tipos</option>
-              {GAIN_OPTIONS.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
-            </select>
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="filter-area" className="text-xs font-medium text-gray-600 dark:text-gray-400">Área</label>
+              <select id="filter-area" value={filterArea} onChange={(e) => setFilterArea(e.target.value)}
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Todas as áreas</option>
+                {areas.map((a) => <option key={a.id} value={a.id}>{a.nome}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="filter-status" className="text-xs font-medium text-gray-600 dark:text-gray-400">Status</label>
+              <select id="filter-status" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Todos os status</option>
+                {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+              </select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="filter-tipo-ganho" className="text-xs font-medium text-gray-600 dark:text-gray-400">Tipo de Ganho</label>
+              <select id="filter-tipo-ganho" value={filterTipoGanho} onChange={(e) => setFilterTipoGanho(e.target.value)}
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                <option value="">Todos os tipos</option>
+                {GAIN_OPTIONS.map((g) => <option key={g.value} value={g.value}>{g.label}</option>)}
+              </select>
+            </div>
           </div>
           {hasFilters && (
-            <button onClick={clearFilters}
-              className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-              Limpar filtros
-            </button>
+            <div className="flex">
+              <button onClick={clearFilters}
+                className="rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                Limpar filtros
+              </button>
+            </div>
           )}
         </div>
       </div>

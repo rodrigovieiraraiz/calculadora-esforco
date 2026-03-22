@@ -183,7 +183,7 @@ export default function AreasPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Gestão de Áreas</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Gerencie as áreas disponíveis no sistema.</p>
