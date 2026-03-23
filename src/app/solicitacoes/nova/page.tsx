@@ -83,6 +83,7 @@ export default function NovaSolicitacaoPage() {
   const [areaId, setAreaId] = useState('')
   const [contexto, setContexto] = useState('')
   const [urgencia, setUrgencia] = useState('')
+  const [zeevNumber, setZeevNumber] = useState('')
 
   // Data
   const [areas, setAreas] = useState<Area[]>([])
@@ -238,6 +239,7 @@ export default function NovaSolicitacaoPage() {
           areaId,
           contexto: contexto.trim() || null,
           urgencia: urgencia || null,
+          zeevNumber: zeevNumber.trim() || null,
         }),
       })
       const createJson = await createRes.json()
@@ -676,6 +678,23 @@ export default function NovaSolicitacaoPage() {
                   onChange={(e) => setAreaSolicitante(e.target.value)}
                   maxLength={100}
                   placeholder="Ex: Comercial, Financeiro, RH"
+                  className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+                />
+              </div>
+
+              {/* Número Zeev */}
+              <div>
+                <label htmlFor="zeevNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Número Zeev
+                  <span className="ml-1 text-xs font-normal text-gray-400">(opcional)</span>
+                </label>
+                <input
+                  id="zeevNumber"
+                  type="text"
+                  value={zeevNumber}
+                  onChange={(e) => setZeevNumber(e.target.value)}
+                  maxLength={100}
+                  placeholder="Ex.: 142838"
                   className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
                 />
               </div>

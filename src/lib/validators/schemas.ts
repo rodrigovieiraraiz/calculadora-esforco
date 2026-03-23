@@ -45,6 +45,7 @@ export const solicitacaoSchema = z.object({
   urgencia: z.string().optional().nullable(),
   solicitante: z.string().max(100).optional().nullable(),
   areaSolicitante: z.string().max(100).optional().nullable(),
+  zeevNumber: z.string().max(100).optional().nullable(),
 })
 
 export const GAIN_TYPES_ENUM = ['REDUCAO_CUSTO', 'AUMENTO_RECEITA', 'REDUCAO_HORAS'] as const

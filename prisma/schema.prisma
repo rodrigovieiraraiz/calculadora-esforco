@@ -104,6 +104,7 @@ model Solicitacao {
   updatedAt       DateTime              @updatedAt
   areaSolicitante String?
   solicitante     String?
+  zeevNumber      String?
   backlogItem     BacklogItem?
   criterios       SolicitacaoCriterio[]
   area            Area                  @relation(fields: [areaId], references: [id])

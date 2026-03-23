@@ -181,6 +181,12 @@ export default function BacklogDetailPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400">Criado em</p>
             <p className="font-medium dark:text-white">{formatDate(sol?.createdAt)}</p>
           </div>
+          {sol?.zeevNumber && (
+            <div>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Número Zeev</p>
+              <p className="font-medium dark:text-white">{sol.zeevNumber}</p>
+            </div>
+          )}
           <div className="md:col-span-2">
             <p className="text-sm text-gray-500 dark:text-gray-400">Descrição</p>
             <p className="mt-1 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{sol?.descricao}</p>
