@@ -43,9 +43,9 @@ export const solicitacaoSchema = z.object({
   areaId: z.string().min(1, 'Área é obrigatória'),
   contexto: z.string().optional().nullable(),
   urgencia: z.string().optional().nullable(),
-  solicitante: z.string().max(100).optional().nullable(),
-  areaSolicitante: z.string().max(100).optional().nullable(),
-  zeevNumber: z.string().max(100).optional().nullable(),
+  solicitante: z.string().min(1, 'Solicitante é obrigatório').max(100),
+  areaSolicitante: z.string().min(1, 'Área Solicitante é obrigatória').max(100),
+  zeevNumber: z.string().min(1, 'Número Zeev é obrigatório').max(100),
 })
 
 export const GAIN_TYPES_ENUM = ['REDUCAO_CUSTO', 'AUMENTO_RECEITA', 'REDUCAO_HORAS'] as const

@@ -221,7 +221,10 @@ export default function NovaSolicitacaoPage() {
 
     if (!titulo.trim()) { setFormError('Título é obrigatório.'); return }
     if (!descricao.trim()) { setFormError('Descrição é obrigatória.'); return }
-    if (!areaId) { setFormError('Área é obrigatória.'); return }
+    if (!solicitante.trim()) { setFormError('Solicitante é obrigatório.'); return }
+    if (!areaSolicitante.trim()) { setFormError('Área Solicitante é obrigatória.'); return }
+    if (!zeevNumber.trim()) { setFormError('Número Zeev é obrigatório.'); return }
+    if (!areaId) { setFormError('Área Técnica é obrigatória.'); return }
 
     setLoading(true)
     setError(null)
@@ -234,12 +237,12 @@ export default function NovaSolicitacaoPage() {
         body: JSON.stringify({
           titulo: titulo.trim(),
           descricao: descricao.trim(),
-          solicitante: solicitante.trim() || null,
-          areaSolicitante: areaSolicitante.trim() || null,
+          solicitante: solicitante.trim(),
+          areaSolicitante: areaSolicitante.trim(),
           areaId,
           contexto: contexto.trim() || null,
           urgencia: urgencia || null,
-          zeevNumber: zeevNumber.trim() || null,
+          zeevNumber: zeevNumber.trim(),
         }),
       })
       const createJson = await createRes.json()
@@ -651,8 +654,7 @@ export default function NovaSolicitacaoPage() {
               {/* Solicitante */}
               <div>
                 <label htmlFor="solicitante" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Solicitante
-                  <span className="ml-1 text-xs font-normal text-gray-400">(opcional)</span>
+                  Solicitante <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="solicitante"
@@ -660,6 +662,7 @@ export default function NovaSolicitacaoPage() {
                   value={solicitante}
                   onChange={(e) => setSolicitante(e.target.value)}
                   maxLength={100}
+                  required
                   placeholder="Ex.: João Silva"
                   className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
                 />
@@ -668,8 +671,7 @@ export default function NovaSolicitacaoPage() {
               {/* Área Solicitante */}
               <div>
                 <label htmlFor="areaSolicitante" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Área Solicitante
-                  <span className="ml-1 text-xs font-normal text-gray-400">(opcional)</span>
+                  Área Solicitante <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="areaSolicitante"
@@ -677,6 +679,7 @@ export default function NovaSolicitacaoPage() {
                   value={areaSolicitante}
                   onChange={(e) => setAreaSolicitante(e.target.value)}
                   maxLength={100}
+                  required
                   placeholder="Ex: Comercial, Financeiro, RH"
                   className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
                 />
@@ -685,8 +688,7 @@ export default function NovaSolicitacaoPage() {
               {/* Número Zeev */}
               <div>
                 <label htmlFor="zeevNumber" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Número Zeev
-                  <span className="ml-1 text-xs font-normal text-gray-400">(opcional)</span>
+                  Número Zeev <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="zeevNumber"
@@ -694,6 +696,7 @@ export default function NovaSolicitacaoPage() {
                   value={zeevNumber}
                   onChange={(e) => setZeevNumber(e.target.value)}
                   maxLength={100}
+                  required
                   placeholder="Ex.: 142838"
                   className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
                 />
