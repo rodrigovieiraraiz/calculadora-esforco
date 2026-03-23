@@ -14,6 +14,7 @@ interface BacklogItem {
     esforcoTotal: number | null
     solicitante: string | null
     areaSolicitante: string | null
+    zeevNumber: string | null
     area: {
       nome: string
     }
@@ -213,6 +214,7 @@ export default function DashboardPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Pos.</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nº Zeev</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Solicitante</th>
                     <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Solicitante</th>
@@ -225,6 +227,7 @@ export default function DashboardPage() {
                   {top5.map((item) => (
                     <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{positionLabel(item.posicao)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.solicitacao?.zeevNumber ?? '—'}</td>
                       <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-xs truncate">{item.solicitacao?.titulo ?? '—'}</td>
                       <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.solicitacao?.solicitante ?? '—'}</td>
                       <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{item.solicitacao?.areaSolicitante ?? '—'}</td>

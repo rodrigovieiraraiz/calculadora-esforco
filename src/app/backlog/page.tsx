@@ -432,10 +432,10 @@ export default function BacklogPage() {
                       <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
                     </th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">#</th>
+                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nº Zeev</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Solicitante</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Solicitante</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nº Zeev</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Técnica</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Esforço</th>
                     <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tipo Ganho</th>
@@ -458,6 +458,9 @@ export default function BacklogPage() {
                         <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
                           {positionLabel(item.posicao)}
                         </td>
+                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                          {item.solicitacao?.zeevNumber ?? '—'}
+                        </td>
                         <td
                           className="px-3 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
                           onClick={() => router.push(`/backlog/${item.id}`)}
@@ -470,9 +473,6 @@ export default function BacklogPage() {
                         </td>
                         <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
                           {item.solicitacao?.areaSolicitante ?? '—'}
-                        </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
-                          {item.solicitacao?.zeevNumber ?? '—'}
                         </td>
                         <td className="px-3 py-3 text-sm text-gray-600 dark:text-gray-400">
                           {item.solicitacao?.area?.nome ?? '—'}
