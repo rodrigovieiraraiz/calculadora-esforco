@@ -86,6 +86,8 @@ export default function BacklogPage() {
   const [filterArea, setFilterArea] = useState('')
   const [filterStatus, setFilterStatus] = useState('')
   const [filterTipoGanho, setFilterTipoGanho] = useState('')
+  const [filterSolicitante, setFilterSolicitante] = useState('')
+  const [filterAreaSolicitante, setFilterAreaSolicitante] = useState('')
 
   // Selection for batch operations
   const [selected, setSelected] = useState<Set<string>>(new Set())
@@ -146,9 +148,17 @@ export default function BacklogPage() {
     setFilterArea('')
     setFilterStatus('')
     setFilterTipoGanho('')
+    setFilterSolicitante('')
+    setFilterAreaSolicitante('')
   }
 
-  const hasFilters = filterArea || filterStatus || filterTipoGanho
+  const hasFilters = filterArea || filterStatus || filterTipoGanho || filterSolicitante || filterAreaSolicitante
+
+  const filteredItems = items.filter((item) => {
+    if (filterSolicitante && !item.solicitacao?.solicitante?.toLowerCase().includes(filterSolicitante.toLowerCase())) return false
+    if (filterAreaSolicitante && !item.solicitacao?.areaSolicitante?.toLowerCase().includes(filterAreaSolicitante.toLowerCase())) return false
+    return true
+  })
 
   const toggleSelect = (id: string) => {
     setSelected((prev) => {
@@ -160,7 +170,7 @@ export default function BacklogPage() {
 
   const toggleSelectAll = () => {
     if (selected.size === items.length) setSelected(new Set())
-    else setSelected(new Set(items.map((i) => i.id)))
+    else setSelected(new Set(filteredItems.map((i) => i.id)))
   }
 
   const handleBatchDelete = async () => {
@@ -293,9 +303,21 @@ export default function BacklogPage() {
       {/* Filters */}
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
         <div className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <div className="flex flex-col gap-1">
-              <label htmlFor="filter-area" className="text-xs font-medium text-gray-600 dark:text-gray-400">Área</label>
+              <label htmlFor="filter-solicitante" className="text-xs font-medium text-gray-600 dark:text-gray-400">Solicitante</label>
+              <input id="filter-solicitante" type="text" value={filterSolicitante} onChange={(e) => setFilterSolicitante(e.target.value)}
+                placeholder="Filtrar por solicitante"
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="filter-area-solicitante" className="text-xs font-medium text-gray-600 dark:text-gray-400">Área Solicitante</label>
+              <input id="filter-area-solicitante" type="text" value={filterAreaSolicitante} onChange={(e) => setFilterAreaSolicitante(e.target.value)}
+                placeholder="Filtrar por área solicitante"
+                className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="filter-area" className="text-xs font-medium text-gray-600 dark:text-gray-400">Área Técnica</label>
               <select id="filter-area" value={filterArea} onChange={(e) => setFilterArea(e.target.value)}
                 className="rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
                 <option value="">Todas as áreas</option>
@@ -351,7 +373,7 @@ export default function BacklogPage() {
           <div className="flex items-center justify-center py-16">
             <LoadingSpinner size="md" label="Carregando backlog..." />
           </div>
-        ) : items.length === 0 ? (
+        ) : filteredItems.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-gray-500">
             <p className="text-sm">Nenhum item encontrado no backlog.</p>
             {hasFilters && (
@@ -362,7 +384,7 @@ export default function BacklogPage() {
           <>
             {/* Mobile card list */}
             <ul className="divide-y divide-gray-100 dark:divide-gray-700 md:hidden">
-              {items.map((item) => {
+              {filteredItems.map((item) => {
                 const isEditing = editingId === item.id
                 return (
                   <li key={item.id} className="p-4 space-y-3">
@@ -429,7 +451,7 @@ export default function BacklogPage() {
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
                     <th className="px-2 py-2 w-8">
-                      <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
+                      <input type="checkbox" checked={filteredItems.length > 0 && selected.size === filteredItems.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
                     </th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">#</th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Nº Zeev</th>
@@ -448,7 +470,7 @@ export default function BacklogPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                  {items.map((item) => {
+                  {filteredItems.map((item) => {
                     const isEditing = editingId === item.id
                     return (
                       <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
