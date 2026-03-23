@@ -428,23 +428,23 @@ export default function BacklogPage() {
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700/50">
                   <tr>
-                    <th className="px-3 py-3 w-10">
+                    <th className="px-2 py-2 w-8">
                       <input type="checkbox" checked={items.length > 0 && selected.size === items.length} onChange={toggleSelectAll} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Selecionar todos" />
                     </th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">#</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nº Zeev</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Solicitante</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Solicitante</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Técnica</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Esforço</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Tipo Ganho</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Valor Ganho</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Score</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Início</th>
-                    <th className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Previsão</th>
-                    <th className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">#</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Nº Zeev</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Solicitante</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Área Solic.</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Área Téc.</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Esforço</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Tipo Ganho</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Vl. Ganho</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Score</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Status</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Início</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Previsão</th>
+                    <th className="px-2 py-2 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Ações</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
@@ -452,51 +452,51 @@ export default function BacklogPage() {
                     const isEditing = editingId === item.id
                     return (
                       <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                        <td className="px-3 py-3 w-10">
+                        <td className="px-2 py-2 w-8">
                           <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)} disabled={isViewer} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed" />
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {positionLabel(item.posicao)}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {item.solicitacao?.zeevNumber ?? '—'}
                         </td>
                         <td
-                          className="px-3 py-3 text-sm font-medium text-gray-900 dark:text-white max-w-[200px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
+                          className="px-2 py-2 text-xs font-medium text-gray-900 dark:text-white max-w-[160px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"
                           onClick={() => router.push(`/backlog/${item.id}`)}
                           title={item.solicitacao?.titulo}
                         >
                           {item.solicitacao?.titulo ?? '—'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 max-w-[100px] truncate whitespace-nowrap">
                           {item.solicitacao?.solicitante ?? '—'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 max-w-[90px] truncate whitespace-nowrap">
                           {item.solicitacao?.areaSolicitante ?? '—'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-600 dark:text-gray-400">
+                        <td className="px-2 py-2 text-xs text-gray-600 dark:text-gray-400 max-w-[90px] truncate whitespace-nowrap">
                           {item.solicitacao?.area?.nome ?? '—'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {item.solicitacao?.esforcoTotal != null ? `${item.solicitacao.esforcoTotal}h` : '—'}
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           <div>
                             <span>{GAIN_TYPE_LABELS[item.tipoGanho] ?? item.tipoGanho}</span>
                             <span className="block text-xs text-gray-400 dark:text-gray-500">{GAIN_WEIGHT_LABELS[item.tipoGanho] ?? ''}</span>
                           </div>
                         </td>
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {item.valorGanho != null ? item.valorGanho.toLocaleString('pt-BR') : '—'}
                         </td>
-                        <td className="px-3 py-3">
-                          <span className="text-base font-bold text-gray-900 dark:text-white" title={`Ganho Norm.: ${item.ganhoNormalizado?.toFixed(2) ?? '—'} / Esforço: ${item.solicitacao?.esforcoTotal ?? '—'}h`}>
+                        <td className="px-2 py-2 whitespace-nowrap">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white" title={`Ganho Norm.: ${item.ganhoNormalizado?.toFixed(2) ?? '—'} / Esforço: ${item.solicitacao?.esforcoTotal ?? '—'}h`}>
                             {item.scorePriorizacao?.toFixed(2) ?? '—'}
                           </span>
                         </td>
 
                         {/* Status */}
-                        <td className="px-3 py-3">
+                        <td className="px-2 py-2 whitespace-nowrap">
                           {isEditing ? (
                             <select
                               value={editStatus}
@@ -511,7 +511,7 @@ export default function BacklogPage() {
                         </td>
 
                         {/* Data Início */}
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {isEditing ? (
                             <input
                               type="date"
@@ -525,7 +525,7 @@ export default function BacklogPage() {
                         </td>
 
                         {/* Previsão Conclusão */}
-                        <td className="px-3 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {isEditing ? (
                             <input
                               type="date"
@@ -539,7 +539,7 @@ export default function BacklogPage() {
                         </td>
 
                         {/* Actions */}
-                        <td className="px-3 py-3 text-right">
+                        <td className="px-2 py-2 text-right whitespace-nowrap">
                           {isEditing ? (
                             <div className="inline-flex items-center gap-1">
                               <button

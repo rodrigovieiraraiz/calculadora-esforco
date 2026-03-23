@@ -316,7 +316,7 @@ export function Sidebar() {
         id="sidebar"
         className={`
           fixed lg:static inset-y-0 left-0 z-40
-          w-64 flex flex-col bg-gray-900 h-screen
+          w-52 flex flex-col bg-gray-900 h-screen
           transition-transform duration-200 ease-in-out
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
