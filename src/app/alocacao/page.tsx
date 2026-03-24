@@ -133,7 +133,7 @@ export default function AlocacaoPage() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([])
   const [alocacoes, setAlocacoes] = useState<Alocacao[]>([])
   const [backlogItems, setBacklogItems] = useState<BacklogItemRef[]>([])
-  const [areasNegocio, setAreasNegocio] = useState<{ id: string; nome: string }[]>([])
+  const [areasNegocio, setAreasNegocio] = useState<{ id: string; nome: string; cor: string | null }[]>([])
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
 
@@ -657,10 +657,11 @@ export default function AlocacaoPage() {
                     value={form.areaSolicitante}
                     onChange={(e) => {
                       const nome = e.target.value
+                      const area = areasNegocio.find((a) => a.nome === nome)
                       setForm((f) => ({
                         ...f,
                         areaSolicitante: nome,
-                        cor: nome ? getAreaColorHex(nome) : f.cor,
+                        cor: nome ? (area?.cor ?? getAreaColorHex(nome)) : f.cor,
                       }))
                     }}
                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"

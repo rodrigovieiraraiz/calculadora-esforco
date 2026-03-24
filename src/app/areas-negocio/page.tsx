@@ -5,14 +5,16 @@ import { useState, useEffect, useCallback } from 'react'
 interface AreaNegocio {
   id: string
   nome: string
+  cor: string | null
   ativo: boolean
 }
 
 interface FormData {
   nome: string
+  cor: string
 }
 
-const emptyForm: FormData = { nome: '' }
+const emptyForm: FormData = { nome: '', cor: '#6b7280' }
 
 export default function AreasNegocioPage() {
   const [areasNegocio, setAreasNegocio] = useState<AreaNegocio[]>([])
@@ -75,7 +77,7 @@ export default function AreasNegocioPage() {
 
   const openEdit = (area: AreaNegocio) => {
     setEditItem(area)
-    setForm({ nome: area.nome })
+    setForm({ nome: area.nome, cor: area.cor ?? '#6b7280' })
     setFormError('')
     setShowForm(true)
   }
@@ -101,7 +103,7 @@ export default function AreasNegocioPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: form.nome.trim() }),
+        body: JSON.stringify({ nome: form.nome.trim(), cor: form.cor || null }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -265,7 +267,10 @@ export default function AreasNegocioPage() {
                       {isAdmin && (
                         <input type="checkbox" checked={selected.has(area.id)} onChange={() => toggleSelect(area.id)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500 shrink-0" />
                       )}
-                      <span className="text-sm font-medium text-gray-900 dark:text-white">{area.nome}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        {area.cor && <span className="shrink-0 inline-block w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600" style={{ backgroundColor: area.cor }} />}
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">{area.nome}</span>
+                      </div>
                     </div>
                     <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${area.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                       {area.ativo ? 'Ativo' : 'Inativo'}
@@ -292,6 +297,7 @@ export default function AreasNegocioPage() {
                     </th>
                   )}
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nome</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Cor</th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
                   {isAdmin && (
                     <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>
@@ -306,7 +312,22 @@ export default function AreasNegocioPage() {
                         <input type="checkbox" checked={selected.has(area.id)} onChange={() => toggleSelect(area.id)} className="rounded border-gray-300 text-teal-600 focus:ring-teal-500" />
                       </td>
                     )}
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{area.nome}</td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-2">
+                        {area.cor && <span className="shrink-0 inline-block w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600" style={{ backgroundColor: area.cor }} />}
+                        {area.nome}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      {area.cor ? (
+                        <div className="flex items-center gap-2">
+                          <span className="inline-block w-6 h-6 rounded border border-gray-300 dark:border-gray-600" style={{ backgroundColor: area.cor }} />
+                          <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{area.cor}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400">—</span>
+                      )}
+                    </td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${area.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                         {area.ativo ? 'Ativo' : 'Inativo'}
@@ -358,6 +379,29 @@ export default function AreasNegocioPage() {
                     placeholder="Nome da área de negócio"
                     maxLength={100}
                   />
+                </div>
+                <div>
+                  <label htmlFor="cor" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Cor
+                  </label>
+                  <div className="mt-1 flex items-center gap-3">
+                    <input
+                      id="cor"
+                      type="color"
+                      value={form.cor || '#6b7280'}
+                      onChange={(e) => setForm((f) => ({ ...f, cor: e.target.value }))}
+                      className="h-9 w-16 cursor-pointer rounded border border-gray-300 dark:border-gray-600 p-0.5 bg-white dark:bg-gray-700"
+                    />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">{form.cor || '—'}</span>
+                    <button
+                      type="button"
+                      onClick={() => setForm((f) => ({ ...f, cor: '#6b7280' }))}
+                      className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 underline"
+                    >
+                      Resetar
+                    </button>
+                  </div>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Define a cor usada no cronograma de alocações.</p>
                 </div>
               </div>
               <div className="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-6 py-4">

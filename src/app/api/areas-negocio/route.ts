@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
       select: {
         id: true,
         nome: true,
+        cor: true,
         ativo: true,
         createdAt: true,
         updatedAt: true,
