@@ -88,6 +88,16 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    if (backlogItemId) {
+      await prisma.backlogItem.update({
+        where: { id: backlogItemId },
+        data: {
+          dataInicio: new Date(dataInicio),
+          previsaoConclusao: new Date(dataFim),
+        },
+      })
+    }
+
     return NextResponse.json(alocacao, { status: 201 })
   } catch (error) {
     if (error instanceof AuthError) {

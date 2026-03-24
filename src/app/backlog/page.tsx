@@ -20,6 +20,8 @@ interface BacklogItem {
   status: string
   dataInicio: string | null
   previsaoConclusao: string | null
+  responsaveis?: string[]
+  alocacoes?: { funcionario: { nome: string } }[]
   solicitacao: {
     titulo: string
     esforcoTotal: number | null
@@ -409,6 +411,7 @@ export default function BacklogPage() {
                       {item.solicitacao?.zeevNumber && (
                         <div className="col-span-2"><span className="font-medium text-gray-500 dark:text-gray-500">Nº Zeev:</span> {item.solicitacao.zeevNumber}</div>
                       )}
+                      <div className="col-span-2"><span className="font-medium text-gray-500 dark:text-gray-500">Responsável:</span> {item.responsaveis && item.responsaveis.length > 0 ? item.responsaveis.join(', ') : '—'}</div>
                       <div><span className="font-medium text-gray-500 dark:text-gray-500">Esforço:</span> {item.solicitacao?.esforcoTotal != null ? `${item.solicitacao.esforcoTotal}h` : '—'}</div>
                       <div><span className="font-medium text-gray-500 dark:text-gray-500">Score:</span> <strong className="text-gray-900 dark:text-white">{item.scorePriorizacao?.toFixed(2) ?? '—'}</strong></div>
                       <div><span className="font-medium text-gray-500 dark:text-gray-500">Ganho:</span> {GAIN_TYPE_LABELS[item.tipoGanho] ?? item.tipoGanho}</div>
@@ -455,6 +458,7 @@ export default function BacklogPage() {
                     </th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">#</th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Nº Zeev</th>
+                    <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Responsável</th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Título</th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Solicitante</th>
                     <th className="px-2 py-2 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap">Área Solic.</th>
@@ -482,6 +486,9 @@ export default function BacklogPage() {
                         </td>
                         <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 whitespace-nowrap">
                           {item.solicitacao?.zeevNumber ?? '—'}
+                        </td>
+                        <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300 max-w-[120px] truncate whitespace-nowrap" title={item.responsaveis && item.responsaveis.length > 0 ? item.responsaveis.join(', ') : undefined}>
+                          {item.responsaveis && item.responsaveis.length > 0 ? item.responsaveis.join(', ') : '—'}
                         </td>
                         <td
                           className="px-2 py-2 text-xs font-medium text-gray-900 dark:text-white max-w-[160px] truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400"

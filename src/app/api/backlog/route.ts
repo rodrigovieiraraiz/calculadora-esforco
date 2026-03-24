@@ -26,6 +26,11 @@ export async function GET(request: NextRequest) {
             area: { select: { id: true, nome: true } },
           },
         },
+        alocacoes: {
+          include: {
+            funcionario: { select: { nome: true } },
+          },
+        },
       },
       orderBy: { scorePriorizacao: 'desc' },
     })
@@ -33,6 +38,7 @@ export async function GET(request: NextRequest) {
     const ranked = items.map((item, index) => ({
       ...item,
       posicao: index + 1,
+      responsaveis: item.alocacoes.map((a) => a.funcionario.nome),
     }))
 
     return NextResponse.json(ranked)

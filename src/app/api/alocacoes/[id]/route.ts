@@ -57,6 +57,18 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       },
     })
 
+    if (alocacao.backlogItemId) {
+      const syncData: Record<string, Date> = {}
+      if (data.dataInicio !== undefined) syncData.dataInicio = data.dataInicio as Date
+      if (data.dataFim !== undefined) syncData.previsaoConclusao = data.dataFim as Date
+      if (Object.keys(syncData).length > 0) {
+        await prisma.backlogItem.update({
+          where: { id: alocacao.backlogItemId },
+          data: syncData,
+        })
+      }
+    }
+
     return NextResponse.json(alocacao)
   } catch (error) {
     if (error instanceof AuthError) {

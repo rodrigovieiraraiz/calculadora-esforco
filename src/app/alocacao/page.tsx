@@ -42,6 +42,39 @@ interface FormData {
   cor: string
 }
 
+function nextBusinessDay(date: Date): Date {
+  const d = new Date(date)
+  const day = d.getDay()
+  if (day === 6) d.setDate(d.getDate() + 2)
+  else if (day === 0) d.setDate(d.getDate() + 1)
+  return d
+}
+
+function countBusinessDays(start: Date, end: Date): number {
+  let count = 0
+  const cur = new Date(start)
+  cur.setHours(0, 0, 0, 0)
+  const endNorm = new Date(end)
+  endNorm.setHours(0, 0, 0, 0)
+  while (cur <= endNorm) {
+    const day = cur.getDay()
+    if (day !== 0 && day !== 6) count++
+    cur.setDate(cur.getDate() + 1)
+  }
+  return count
+}
+
+function addBusinessDays(date: Date, days: number): Date {
+  const d = new Date(date)
+  let remaining = days
+  while (remaining > 0) {
+    d.setDate(d.getDate() + 1)
+    const day = d.getDay()
+    if (day !== 0 && day !== 6) remaining--
+  }
+  return d
+}
+
 function startOfWeek(date: Date): Date {
   const d = new Date(date)
   const day = d.getDay()
@@ -566,7 +599,27 @@ export default function AlocacaoPage() {
                     <input
                       type="date"
                       value={form.dataInicio}
-                      onChange={(e) => setForm((f) => ({ ...f, dataInicio: e.target.value }))}
+                      onChange={(e) => {
+                        const rawValue = e.target.value
+                        if (!rawValue) {
+                          setForm((f) => ({ ...f, dataInicio: rawValue }))
+                          return
+                        }
+                        const newStart = nextBusinessDay(new Date(rawValue + 'T12:00:00'))
+                        const newStartStr = dateToInput(newStart)
+                        setForm((f) => {
+                          if (f.dataFim && f.dataInicio) {
+                            const oldStart = new Date(f.dataInicio + 'T12:00:00')
+                            const oldEnd = new Date(f.dataFim + 'T12:00:00')
+                            const businessDays = countBusinessDays(oldStart, oldEnd)
+                            const newEnd = businessDays > 1
+                              ? addBusinessDays(newStart, businessDays - 1)
+                              : newStart
+                            return { ...f, dataInicio: newStartStr, dataFim: dateToInput(newEnd) }
+                          }
+                          return { ...f, dataInicio: newStartStr, dataFim: f.dataFim || newStartStr }
+                        })
+                      }}
                       className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                     />
                   </div>
@@ -577,7 +630,15 @@ export default function AlocacaoPage() {
                     <input
                       type="date"
                       value={form.dataFim}
-                      onChange={(e) => setForm((f) => ({ ...f, dataFim: e.target.value }))}
+                      onChange={(e) => {
+                        const rawValue = e.target.value
+                        if (!rawValue) {
+                          setForm((f) => ({ ...f, dataFim: rawValue }))
+                          return
+                        }
+                        const adjustedEnd = nextBusinessDay(new Date(rawValue + 'T12:00:00'))
+                        setForm((f) => ({ ...f, dataFim: dateToInput(adjustedEnd) }))
+                      }}
                       className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                     />
                   </div>
