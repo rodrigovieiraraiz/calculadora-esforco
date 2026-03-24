@@ -148,6 +148,7 @@ model BacklogItem {
   dataInicio        DateTime?
   previsaoConclusao DateTime?
   solicitacao       Solicitacao @relation(fields: [solicitacaoId], references: [id], onDelete: Cascade)
+  alocacoes         Alocacao[]
 
   @@map("backlog_items")
 }
@@ -208,4 +209,32 @@ model AuditLog {
   createdAt       DateTime @default(now())
 
   @@map("audit_logs")
+}
+
+model Funcionario {
+  id        String      @id @default(cuid())
+  nome      String
+  cargo     String?
+  ativo     Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  alocacoes Alocacao[]
+
+  @@map("funcionarios")
+}
+
+model Alocacao {
+  id              String       @id @default(cuid())
+  funcionarioId   String
+  backlogItemId   String?
+  titulo          String
+  dataInicio      DateTime
+  dataFim         DateTime
+  areaSolicitante String?
+  cor             String?
+  createdAt       DateTime     @default(now())
+  funcionario     Funcionario  @relation(fields: [funcionarioId], references: [id], onDelete: Cascade)
+  backlogItem     BacklogItem? @relation(fields: [backlogItemId], references: [id], onDelete: SetNull)
+
+  @@map("alocacoes")
 }
