@@ -231,12 +231,13 @@ export default function AlocacaoPage() {
     const item = backlogItems.find((b) => b.id === backlogItemId)
     if (item) {
       const area = item.solicitacao.areaSolicitante ?? item.solicitacao.area.nome
+      const areaCadastrada = areasNegocio.find((a) => a.nome === area)
       setForm((f) => ({
         ...f,
         backlogItemId,
         titulo: item.solicitacao.titulo,
         areaSolicitante: area,
-        cor: area ? getAreaColorHex(area) : f.cor,
+        cor: area ? (areaCadastrada?.cor ?? getAreaColorHex(area)) : f.cor,
       }))
     } else {
       setForm((f) => ({ ...f, backlogItemId }))
