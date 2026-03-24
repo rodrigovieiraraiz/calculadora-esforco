@@ -238,3 +238,13 @@ model Alocacao {
 
   @@map("alocacoes")
 }
+
+model AreaNegocio {
+  id        String   @id @default(cuid())
+  nome      String   @unique
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("areas_negocio")
+}

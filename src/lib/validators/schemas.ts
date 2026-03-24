@@ -6,6 +6,11 @@ export const areaSchema = z.object({
   ativo: z.boolean().optional(),
 })
 
+export const areaNegocioSchema = z.object({
+  nome: z.string().min(1, 'Nome é obrigatório').max(100),
+  ativo: z.boolean().optional(),
+})
+
 export const componenteSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório').max(100),
   descricao: z.string().max(500).optional().nullable(),
