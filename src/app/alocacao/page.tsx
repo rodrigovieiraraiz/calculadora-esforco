@@ -256,8 +256,8 @@ export default function AlocacaoPage() {
     }
   }
 
-  const getAlocacaoForCell = (funcionarioId: string, weekStart: Date): Alocacao | undefined => {
-    return alocacoes.find(
+  const getAlocacoesForCell = (funcionarioId: string, weekStart: Date): Alocacao[] => {
+    return alocacoes.filter(
       (a) => a.funcionarioId === funcionarioId && overlapsWeek(a, weekStart)
     )
   }
@@ -366,44 +366,47 @@ export default function AlocacaoPage() {
                     {f.cargo && <p className="text-xs text-gray-500 dark:text-gray-400">{f.cargo}</p>}
                   </td>
                   {weeks.map((w, i) => {
-                    const alocacao = getAlocacaoForCell(f.id, w)
-                    const bgColor = alocacao
-                      ? getAreaColor(alocacao.areaSolicitante, alocacao.cor)
-                      : null
-                    const textColor = bgColor ? getAreaTextColor(bgColor) : null
+                    const cellAlocacoes = getAlocacoesForCell(f.id, w)
 
                     return (
                       <td
                         key={i}
-                        className="px-2 py-2 border-l border-gray-100 dark:border-gray-700 align-middle"
+                        className="px-2 py-2 border-l border-gray-100 dark:border-gray-700 align-top"
                         style={{ minWidth: '110px' }}
                       >
-                        {alocacao ? (
-                          <button
-                            onClick={() => isOperator && openEdit(alocacao)}
-                            title={alocacao.titulo}
-                            className="w-full rounded px-2 py-1.5 text-xs font-medium text-left truncate transition-opacity hover:opacity-80"
-                            style={{ backgroundColor: bgColor!, color: textColor! }}
-                          >
-                            <span className="block truncate">{alocacao.titulo}</span>
-                            {alocacao.areaSolicitante && (
-                              <span className="block truncate opacity-80 text-xs">{alocacao.areaSolicitante}</span>
-                            )}
-                          </button>
-                        ) : (
-                          isOperator ? (
+                        <div className="flex flex-col gap-1">
+                          {cellAlocacoes.map((alocacao) => {
+                            const bgColor = getAreaColor(alocacao.areaSolicitante, alocacao.cor)
+                            const textColor = getAreaTextColor(bgColor)
+                            return (
+                              <button
+                                key={alocacao.id}
+                                onClick={() => isOperator && openEdit(alocacao)}
+                                title={alocacao.titulo}
+                                className="w-full rounded px-2 py-1.5 text-xs font-medium text-left transition-opacity hover:opacity-80"
+                                style={{ backgroundColor: bgColor, color: textColor }}
+                              >
+                                <span className="block truncate">{alocacao.titulo}</span>
+                                {alocacao.areaSolicitante && (
+                                  <span className="block truncate opacity-80 text-xs">{alocacao.areaSolicitante}</span>
+                                )}
+                              </button>
+                            )
+                          })}
+                          {isOperator && (
                             <button
                               onClick={() => openCreate(f.id, w)}
-                              className="w-full h-10 rounded border-2 border-dashed border-gray-200 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-teal-400 dark:hover:border-teal-600 hover:text-teal-400 dark:hover:text-teal-600 transition-colors text-lg"
+                              className="w-full rounded border-2 border-dashed border-gray-200 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-teal-400 dark:hover:border-teal-600 hover:text-teal-400 dark:hover:text-teal-600 transition-colors text-lg leading-none py-1"
                               title="Adicionar alocação"
                               aria-label={`Adicionar alocação para ${f.nome} na semana ${formatWeekLabel(w)}`}
                             >
                               +
                             </button>
-                          ) : (
+                          )}
+                          {!isOperator && cellAlocacoes.length === 0 && (
                             <div className="w-full h-10 rounded bg-gray-50 dark:bg-gray-700/30" />
-                          )
-                        )}
+                          )}
+                        </div>
                       </td>
                     )
                   })}
