@@ -13,6 +13,11 @@ interface Area {
   nome: string
 }
 
+interface AreaNegocio {
+  id: string
+  nome: string
+}
+
 interface Complexidade {
   id: string
   nome: string
@@ -87,6 +92,7 @@ export default function NovaSolicitacaoPage() {
 
   // Data
   const [areas, setAreas] = useState<Area[]>([])
+  const [areasNegocio, setAreasNegocio] = useState<AreaNegocio[]>([])
   const [criterios, setCriterios] = useState<CriterioRow[]>([])
   const [availableCriterios, setAvailableCriterios] = useState<AvailableCriterio[]>([])
   const [analise, setAnalise] = useState<Analise | null>(null)
@@ -130,9 +136,13 @@ export default function NovaSolicitacaoPage() {
   useEffect(() => {
     async function fetchAreas() {
       try {
-        const res = await fetch('/api/areas?ativo=true')
-        const json = await res.json()
-        setAreas(Array.isArray(json) ? json : [])
+        const [areasRes, anRes] = await Promise.all([
+          fetch('/api/areas?ativo=true'),
+          fetch('/api/areas-negocio?ativo=true'),
+        ])
+        const [areasJson, anJson] = await Promise.all([areasRes.json(), anRes.json()])
+        setAreas(Array.isArray(areasJson) ? areasJson : [])
+        setAreasNegocio(Array.isArray(anJson) ? anJson : [])
       } catch {
         setError('Erro ao carregar áreas.')
       }
@@ -673,16 +683,18 @@ export default function NovaSolicitacaoPage() {
                 <label htmlFor="areaSolicitante" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Área Solicitante <span className="text-red-500">*</span>
                 </label>
-                <input
+                <select
                   id="areaSolicitante"
-                  type="text"
                   value={areaSolicitante}
                   onChange={(e) => setAreaSolicitante(e.target.value)}
-                  maxLength={100}
                   required
-                  placeholder="Ex: Comercial, Financeiro, RH"
-                  className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm placeholder-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
-                />
+                  className="mt-1.5 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Selecione uma área de negócio</option>
+                  {areasNegocio.map((a) => (
+                    <option key={a.id} value={a.nome}>{a.nome}</option>
+                  ))}
+                </select>
               </div>
 
               {/* Número Zeev */}

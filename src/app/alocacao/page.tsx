@@ -133,6 +133,7 @@ export default function AlocacaoPage() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([])
   const [alocacoes, setAlocacoes] = useState<Alocacao[]>([])
   const [backlogItems, setBacklogItems] = useState<BacklogItemRef[]>([])
+  const [areasNegocio, setAreasNegocio] = useState<{ id: string; nome: string }[]>([])
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
 
@@ -164,17 +165,19 @@ export default function AlocacaoPage() {
       const periodStart = weeks[0]
       const periodEnd = addWeeks(weeks[WEEKS_WINDOW - 1], 1)
 
-      const [fRes, aRes, bRes] = await Promise.all([
+      const [fRes, aRes, bRes, anRes] = await Promise.all([
         fetch('/api/funcionarios'),
         fetch(`/api/alocacoes?dataInicio=${dateToInput(periodStart)}&dataFim=${dateToInput(periodEnd)}`),
         fetch('/api/backlog'),
+        fetch('/api/areas-negocio?ativo=true'),
       ])
 
-      const [fJson, aJson, bJson] = await Promise.all([fRes.json(), aRes.json(), bRes.json()])
+      const [fJson, aJson, bJson, anJson] = await Promise.all([fRes.json(), aRes.json(), bRes.json(), anRes.json()])
 
       setFuncionarios(Array.isArray(fJson) ? fJson.filter((f: Funcionario) => f.ativo) : [])
       setAlocacoes(Array.isArray(aJson) ? aJson : [])
       setBacklogItems(Array.isArray(bJson) ? bJson : [])
+      setAreasNegocio(Array.isArray(anJson) ? anJson : [])
     } catch {
       showError('Erro ao carregar dados.')
     } finally {
@@ -648,14 +651,16 @@ export default function AlocacaoPage() {
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Área Solicitante
                   </label>
-                  <input
-                    type="text"
+                  <select
                     value={form.areaSolicitante}
                     onChange={(e) => setForm((f) => ({ ...f, areaSolicitante: e.target.value }))}
-                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-                    placeholder="Ex: TI, RH, Financeiro..."
-                    maxLength={100}
-                  />
+                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  >
+                    <option value="">Selecione uma área de negócio</option>
+                    {areasNegocio.map((a) => (
+                      <option key={a.id} value={a.nome}>{a.nome}</option>
+                    ))}
+                  </select>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Define a cor da célula no cronograma.</p>
                 </div>
 
