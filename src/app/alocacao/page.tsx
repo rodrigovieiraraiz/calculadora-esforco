@@ -134,7 +134,7 @@ export default function AlocacaoPage() {
   const [alocacoes, setAlocacoes] = useState<Alocacao[]>([])
   const [backlogItems, setBacklogItems] = useState<BacklogItemRef[]>([])
   const [loading, setLoading] = useState(true)
-  const [isOperator, setIsOperator] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   const [windowStart, setWindowStart] = useState<Date>(() => startOfWeek(new Date()))
   const weeks = Array.from({ length: WEEKS_WINDOW }, (_, i) => addWeeks(windowStart, i))
@@ -187,7 +187,7 @@ export default function AlocacaoPage() {
     fetch('/api/auth/me')
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (data?.role === 'ADMIN' || data?.role === 'OPERATOR') setIsOperator(true)
+        if (data?.role === 'ADMIN') setIsAdmin(true)
       })
       .catch(() => {})
   }, [fetchData])
@@ -305,7 +305,7 @@ export default function AlocacaoPage() {
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Alocação de Time</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Visualize e gerencie a alocação semanal do time.</p>
         </div>
-        {isOperator && (
+        {isAdmin && (
           <button
             onClick={() => openCreate()}
             className="inline-flex items-center gap-2 rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
@@ -414,7 +414,7 @@ export default function AlocacaoPage() {
                             return (
                               <button
                                 key={alocacao.id}
-                                onClick={() => isOperator && openEdit(alocacao)}
+                                onClick={() => isAdmin && openEdit(alocacao)}
                                 title={alocacao.titulo}
                                 className="w-full rounded px-2 py-1.5 text-xs font-medium text-left transition-opacity hover:opacity-80"
                                 style={{ backgroundColor: bgColor, color: textColor }}
@@ -426,7 +426,7 @@ export default function AlocacaoPage() {
                               </button>
                             )
                           })}
-                          {isOperator && (
+                          {isAdmin && (
                             <button
                               onClick={() => openCreate(f.id, w)}
                               className="w-full rounded border-2 border-dashed border-gray-200 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-teal-400 dark:hover:border-teal-600 hover:text-teal-400 dark:hover:text-teal-600 transition-colors text-lg leading-none py-1"
@@ -436,7 +436,7 @@ export default function AlocacaoPage() {
                               +
                             </button>
                           )}
-                          {!isOperator && cellAlocacoes.length === 0 && (
+                          {!isAdmin && cellAlocacoes.length === 0 && (
                             <div className="w-full h-10 rounded bg-gray-50 dark:bg-gray-700/30" />
                           )}
                         </div>
@@ -474,7 +474,7 @@ export default function AlocacaoPage() {
                 {fAlocacoes.length === 0 ? (
                   <div className="px-4 py-4 text-xs text-gray-400">
                     Sem alocações no período.
-                    {isOperator && (
+                    {isAdmin && (
                       <button onClick={() => openCreate(f.id)} className="ml-2 text-teal-600 hover:underline">Adicionar</button>
                     )}
                   </div>
@@ -498,7 +498,7 @@ export default function AlocacaoPage() {
                               {new Date(a.dataInicio).toLocaleDateString('pt-BR')} – {new Date(a.dataFim).toLocaleDateString('pt-BR')}
                             </p>
                           </div>
-                          {isOperator && (
+                          {isAdmin && (
                             <button
                               onClick={() => openEdit(a)}
                               className="shrink-0 text-xs text-blue-600 hover:underline"
