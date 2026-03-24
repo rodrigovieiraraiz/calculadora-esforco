@@ -17,6 +17,7 @@ model Area {
   componentes  Componente[]
   criterios    Criterio[]
   solicitacoes Solicitacao[]
+  funcionarios Funcionario[]
 
   @@map("areas")
 }
@@ -216,8 +217,10 @@ model Funcionario {
   nome      String
   cargo     String?
   ativo     Boolean     @default(true)
+  areaId    String?
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  area      Area?       @relation(fields: [areaId], references: [id])
   alocacoes Alocacao[]
 
   @@map("funcionarios")

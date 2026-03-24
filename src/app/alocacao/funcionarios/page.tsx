@@ -2,22 +2,30 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+interface Area {
+  id: string
+  nome: string
+}
+
 interface Funcionario {
   id: string
   nome: string
   cargo: string | null
   ativo: boolean
+  area: Area | null
 }
 
 interface FormData {
   nome: string
   cargo: string
+  areaId: string
 }
 
-const emptyForm: FormData = { nome: '', cargo: '' }
+const emptyForm: FormData = { nome: '', cargo: '', areaId: '' }
 
 export default function FuncionariosPage() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([])
+  const [areas, setAreas] = useState<Area[]>([])
   const [loading, setLoading] = useState(true)
   const [isAdmin, setIsAdmin] = useState(false)
   const [showForm, setShowForm] = useState(false)
@@ -54,6 +62,10 @@ export default function FuncionariosPage() {
 
   useEffect(() => {
     fetchFuncionarios()
+    fetch('/api/areas?ativo=true')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => setAreas(Array.isArray(data) ? data.map((a: { id: string; nome: string }) => ({ id: a.id, nome: a.nome })) : []))
+      .catch(() => {})
     fetch('/api/auth/me')
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
@@ -71,7 +83,7 @@ export default function FuncionariosPage() {
 
   const openEdit = (f: Funcionario) => {
     setEditItem(f)
-    setForm({ nome: f.nome, cargo: f.cargo ?? '' })
+    setForm({ nome: f.nome, cargo: f.cargo ?? '', areaId: f.area?.id ?? '' })
     setFormError('')
     setShowForm(true)
   }
@@ -97,7 +109,7 @@ export default function FuncionariosPage() {
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: form.nome.trim(), cargo: form.cargo.trim() || null }),
+        body: JSON.stringify({ nome: form.nome.trim(), cargo: form.cargo.trim() || null, areaId: form.areaId || null }),
       })
       const json = await res.json()
       if (!res.ok) {
@@ -211,6 +223,7 @@ export default function FuncionariosPage() {
                     <div className="min-w-0">
                       <p className="text-sm font-medium text-gray-900 dark:text-white">{f.nome}</p>
                       {f.cargo && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{f.cargo}</p>}
+                      {f.area && <p className="text-xs text-teal-600 dark:text-teal-400 mt-0.5">{f.area.nome}</p>}
                     </div>
                     <span className={`shrink-0 inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${f.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                       {f.ativo ? 'Ativo' : 'Inativo'}
@@ -233,6 +246,7 @@ export default function FuncionariosPage() {
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Nome</th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Cargo</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Área Técnica</th>
                   <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Status</th>
                   {isAdmin && <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">Ações</th>}
                 </tr>
@@ -242,6 +256,7 @@ export default function FuncionariosPage() {
                   <tr key={f.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                     <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-white">{f.nome}</td>
                     <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{f.cargo ?? '—'}</td>
+                    <td className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{f.area?.nome ?? '—'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${f.ativo ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                         {f.ativo ? 'Ativo' : 'Inativo'}
@@ -307,6 +322,22 @@ export default function FuncionariosPage() {
                     placeholder="Ex: Desenvolvedor, Analista..."
                     maxLength={100}
                   />
+                </div>
+                <div>
+                  <label htmlFor="areaId" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Área Técnica
+                  </label>
+                  <select
+                    id="areaId"
+                    value={form.areaId}
+                    onChange={(e) => setForm((f) => ({ ...f, areaId: e.target.value }))}
+                    className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                  >
+                    <option value="">Nenhuma</option>
+                    {areas.map((a) => (
+                      <option key={a.id} value={a.id}>{a.nome}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-6 py-4">

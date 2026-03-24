@@ -5,7 +5,10 @@ import { requireAdmin, AuthError } from '@/lib/auth'
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const funcionario = await prisma.funcionario.findUnique({ where: { id } })
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id },
+      include: { area: { select: { id: true, nome: true } } },
+    })
     if (!funcionario) {
       return NextResponse.json({ error: 'Funcionário não encontrado' }, { status: 404 })
     }
@@ -21,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     await requireAdmin()
     const { id } = await params
     const body = await request.json()
-    const { nome, cargo, ativo } = body
+    const { nome, cargo, ativo, areaId } = body
 
     if (nome !== undefined && !nome?.trim()) {
       return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
@@ -31,10 +34,14 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     if (nome !== undefined) data.nome = nome.trim()
     if (cargo !== undefined) data.cargo = cargo?.trim() || null
     if (ativo !== undefined) data.ativo = ativo
+    if (areaId !== undefined) data.areaId = areaId || null
 
     const funcionario = await prisma.funcionario.update({
       where: { id },
       data,
+      include: {
+        area: { select: { id: true, nome: true } },
+      },
     })
 
     return NextResponse.json(funcionario)

@@ -8,6 +8,7 @@ interface Funcionario {
   nome: string
   cargo: string | null
   ativo: boolean
+  area: { id: string; nome: string } | null
 }
 
 interface BacklogItemRef {
@@ -149,6 +150,10 @@ export default function AlocacaoPage() {
 
   const [success, setSuccess] = useState('')
   const [error, setError] = useState('')
+
+  const [filterAreaTecnica, setFilterAreaTecnica] = useState('')
+  const [filterNome, setFilterNome] = useState('')
+  const [filterAreaSolicitante, setFilterAreaSolicitante] = useState('')
 
   const showSuccess = (msg: string) => {
     setSuccess(msg)
@@ -303,6 +308,33 @@ export default function AlocacaoPage() {
 
   const periodEnd = addWeeks(weeks[WEEKS_WINDOW - 1], 1)
 
+  // Filter options derived from loaded data
+  const areasTecnicasUnicas = Array.from(
+    new Map(
+      funcionarios
+        .filter((f) => f.area)
+        .map((f) => [f.area!.id, f.area!.nome])
+    ).entries()
+  ).sort((a, b) => a[1].localeCompare(b[1]))
+
+  const areasSolicitantesUnicas = Array.from(
+    new Set(alocacoes.map((a) => a.areaSolicitante).filter(Boolean) as string[])
+  ).sort()
+
+  const funcionariosFiltrados = funcionarios.filter((f) => {
+    if (filterAreaTecnica && f.area?.id !== filterAreaTecnica) return false
+    if (filterNome && !f.nome.toLowerCase().includes(filterNome.toLowerCase())) return false
+    if (filterAreaSolicitante) {
+      const temAlocacaoComArea = alocacoes.some(
+        (a) => a.funcionarioId === f.id && a.areaSolicitante === filterAreaSolicitante
+      )
+      if (!temAlocacaoComArea) return false
+    }
+    return true
+  })
+
+  const hasActiveFilters = filterAreaTecnica !== '' || filterNome !== '' || filterAreaSolicitante !== ''
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -360,6 +392,58 @@ export default function AlocacaoPage() {
         </button>
       </div>
 
+      {/* Filter bar */}
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Área Técnica</label>
+            <select
+              value={filterAreaTecnica}
+              onChange={(e) => setFilterAreaTecnica(e.target.value)}
+              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            >
+              <option value="">Todas as áreas</option>
+              {areasTecnicasUnicas.map(([id, nome]) => (
+                <option key={id} value={id}>{nome}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Funcionário</label>
+            <input
+              type="text"
+              value={filterNome}
+              onChange={(e) => setFilterNome(e.target.value)}
+              placeholder="Buscar por nome..."
+              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Área Solicitante</label>
+            <select
+              value={filterAreaSolicitante}
+              onChange={(e) => setFilterAreaSolicitante(e.target.value)}
+              className="block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+            >
+              <option value="">Todas</option>
+              {areasSolicitantesUnicas.map((nome) => (
+                <option key={nome} value={nome}>{nome}</option>
+              ))}
+            </select>
+          </div>
+          {hasActiveFilters && (
+            <div className="flex items-end">
+              <button
+                onClick={() => { setFilterAreaTecnica(''); setFilterNome(''); setFilterAreaSolicitante('') }}
+                className="w-full rounded-md border border-gray-300 dark:border-gray-600 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Limpar filtros
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Timeline — desktop only, scrollable */}
       <div className="hidden md:block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-x-auto">
         {loading ? (
@@ -370,15 +454,17 @@ export default function AlocacaoPage() {
             </svg>
             Carregando...
           </div>
-        ) : funcionarios.length === 0 ? (
+        ) : funcionariosFiltrados.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-gray-400">
             <svg className="mb-3 h-10 w-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            <p className="text-sm">Nenhum funcionário ativo cadastrado.</p>
-            <a href="/alocacao/funcionarios" className="mt-3 text-sm text-teal-600 hover:underline">
-              Cadastrar funcionários
-            </a>
+            <p className="text-sm">{funcionarios.length === 0 ? 'Nenhum funcionário ativo cadastrado.' : 'Nenhum funcionário encontrado com os filtros aplicados.'}</p>
+            {funcionarios.length === 0 && (
+              <a href="/alocacao/funcionarios" className="mt-3 text-sm text-teal-600 hover:underline">
+                Cadastrar funcionários
+              </a>
+            )}
           </div>
         ) : (
           <table className="min-w-full border-collapse">
@@ -398,7 +484,7 @@ export default function AlocacaoPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {funcionarios.map((f) => (
+              {funcionariosFiltrados.map((f) => (
                 <tr key={f.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-700/30">
                   <td className="sticky left-0 z-10 bg-white dark:bg-gray-800 px-4 py-3 border-r border-gray-100 dark:border-gray-700">
                     <p className="text-sm font-medium text-gray-900 dark:text-white whitespace-nowrap">{f.nome}</p>
@@ -466,16 +552,17 @@ export default function AlocacaoPage() {
             </svg>
             Carregando...
           </div>
-        ) : funcionarios.length === 0 ? (
-          <div className="text-center py-10 text-gray-400 text-sm">Nenhum funcionário ativo cadastrado.</div>
+        ) : funcionariosFiltrados.length === 0 ? (
+          <div className="text-center py-10 text-gray-400 text-sm">{funcionarios.length === 0 ? 'Nenhum funcionário ativo cadastrado.' : 'Nenhum funcionário encontrado com os filtros aplicados.'}</div>
         ) : (
-          funcionarios.map((f) => {
+          funcionariosFiltrados.map((f) => {
             const fAlocacoes = alocacoes.filter((a) => a.funcionarioId === f.id)
             return (
               <div key={f.id} className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
                 <div className="px-4 py-3 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">{f.nome}</p>
                   {f.cargo && <p className="text-xs text-gray-500 dark:text-gray-400">{f.cargo}</p>}
+                  {f.area && <p className="text-xs text-teal-600 dark:text-teal-400">{f.area.nome}</p>}
                 </div>
                 {fAlocacoes.length === 0 ? (
                   <div className="px-4 py-4 text-xs text-gray-400">

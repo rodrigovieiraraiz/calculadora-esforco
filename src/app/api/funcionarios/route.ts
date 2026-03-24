@@ -6,6 +6,9 @@ export async function GET() {
   try {
     const funcionarios = await prisma.funcionario.findMany({
       orderBy: { nome: 'asc' },
+      include: {
+        area: { select: { id: true, nome: true } },
+      },
     })
     return NextResponse.json(funcionarios)
   } catch (error) {
@@ -18,7 +21,7 @@ export async function POST(request: NextRequest) {
   try {
     await requireAdmin()
     const body = await request.json()
-    const { nome, cargo } = body
+    const { nome, cargo, areaId } = body
 
     if (!nome?.trim()) {
       return NextResponse.json({ error: 'Nome é obrigatório' }, { status: 400 })
@@ -28,6 +31,10 @@ export async function POST(request: NextRequest) {
       data: {
         nome: nome.trim(),
         cargo: cargo?.trim() || null,
+        areaId: areaId || null,
+      },
+      include: {
+        area: { select: { id: true, nome: true } },
       },
     })
 
