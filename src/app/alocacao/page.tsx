@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { getAreaColor, getAreaTextColor } from '@/lib/alocacao-colors'
+import { getAreaColor, getAreaColorHex, getAreaTextColor } from '@/lib/alocacao-colors'
 
 interface Funcionario {
   id: string
@@ -230,11 +230,13 @@ export default function AlocacaoPage() {
   const handleBacklogSelect = (backlogItemId: string) => {
     const item = backlogItems.find((b) => b.id === backlogItemId)
     if (item) {
+      const area = item.solicitacao.areaSolicitante ?? item.solicitacao.area.nome
       setForm((f) => ({
         ...f,
         backlogItemId,
         titulo: item.solicitacao.titulo,
-        areaSolicitante: item.solicitacao.areaSolicitante ?? item.solicitacao.area.nome,
+        areaSolicitante: area,
+        cor: area ? getAreaColorHex(area) : f.cor,
       }))
     } else {
       setForm((f) => ({ ...f, backlogItemId }))
@@ -653,7 +655,14 @@ export default function AlocacaoPage() {
                   </label>
                   <select
                     value={form.areaSolicitante}
-                    onChange={(e) => setForm((f) => ({ ...f, areaSolicitante: e.target.value }))}
+                    onChange={(e) => {
+                      const nome = e.target.value
+                      setForm((f) => ({
+                        ...f,
+                        areaSolicitante: nome,
+                        cor: nome ? getAreaColorHex(nome) : f.cor,
+                      }))
+                    }}
                     className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                   >
                     <option value="">Selecione uma área de negócio</option>
